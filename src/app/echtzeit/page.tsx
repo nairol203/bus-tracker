@@ -15,15 +15,7 @@ async function searchByCharacter(character: string): Promise<StopsByCharacter | 
 	endpoint.searchParams.append('character', character);
 
 	try {
-		const res = await fetch(endpoint.toString(), {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			next: {
-				revalidate: ONE_DAY_IN_SECONDS,
-			},
-		});
+		const res = await fetch(endpoint.toString(), { method: 'GET', headers: { 'Content-Type': 'application/json' }, next: { revalidate: ONE_DAY_IN_SECONDS } });
 
 		if (!res.ok) {
 			console.log(await res.text().catch(() => 'res.text() failed'));
@@ -36,13 +28,10 @@ async function searchByCharacter(character: string): Promise<StopsByCharacter | 
 	}
 }
 
-type Props = {
-	params: {};
-	searchParams: { stop?: string; routeId?: string; direction?: string };
-};
+type SearchParams = { searchParams: Promise<{ stop?: string; routeId?: string; direction?: string }> };
 
-export async function generateMetadata({ params, searchParams }: Props, parent: ResolvingMetadata): Promise<Metadata> {
-	const { direction, routeId, stop: stopId } = searchParams;
+export async function generateMetadata({ searchParams }: SearchParams): Promise<Metadata> {
+	const { direction, routeId, stop: stopId } = await searchParams;
 
 	if (!stopId) {
 		return {};
@@ -50,13 +39,12 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
 
 	const data = await getStopData({ stopId, direction, routeId });
 
-	return {
-		title: `${data ? `${data.stopName} | KVG Bus Tracker` : 'KVG Bus Tracker'}`,
-	};
+	return { title: `${data ? `${data.stopName} | KVG Bus Tracker` : 'KVG Bus Tracker'}` };
 }
 
-export default async function Page({ params, searchParams }: Props) {
+export default async function Page({ searchParams }: SearchParams) {
 	const stops: StopByCharacter[] = [];
+	const { stop } = await searchParams;
 
 	for (const letter of alphabet) {
 		const result = await searchByCharacter(letter);
@@ -64,7 +52,7 @@ export default async function Page({ params, searchParams }: Props) {
 		stops.push(...result.stops);
 	}
 
-	if (searchParams.stop) {
+	if (stop) {
 		return <Departures stops={stops} />;
 	}
 

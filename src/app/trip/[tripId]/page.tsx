@@ -2,13 +2,10 @@ import { Metadata, ResolvingMetadata } from 'next';
 import { getTripInfo } from 'src/app/(components)/actions';
 import Trip from './Trip';
 
-type Props = {
-	params: { tripId: string };
-	searchParams: {};
-};
+type Params = { params: Promise<{ tripId: string }> };
 
-export async function generateMetadata({ params, searchParams }: Props, parent: ResolvingMetadata): Promise<Metadata> {
-	const { tripId } = params;
+export async function generateMetadata({ params }: Params, parent: ResolvingMetadata): Promise<Metadata> {
+	const { tripId } = await params;
 
 	if (!tripId) {
 		return {};
@@ -16,11 +13,11 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
 
 	const data = await getTripInfo(tripId);
 
-	return {
-		title: `${data ? `${data.routeName} ${data.directionText} | KVG Bus Tracker` : 'KVG Bus Tracker'}`,
-	};
+	return { title: `${data ? `${data.routeName} ${data.directionText} | KVG Bus Tracker` : 'KVG Bus Tracker'}` };
 }
 
-export default async function Page({ params, searchParams }: Props) {
-	return <Trip tripId={params.tripId} />;
+export default async function Page({ params }: Params) {
+	const { tripId } = await params;
+
+	return <Trip tripId={tripId} />;
 }

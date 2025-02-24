@@ -30,6 +30,7 @@ export default function Trip({ tripId }: { tripId: string }) {
 	const {
 		data: tripInfo,
 		isFetching,
+		isLoading,
 		isError,
 		isPaused,
 	} = useQuery({
@@ -65,7 +66,7 @@ export default function Trip({ tripId }: { tripId: string }) {
 		);
 	}
 
-	if (!tripInfo) {
+	if (!tripInfo || isLoading) {
 		return (
 			<div className='mx-2 grid gap-2'>
 				<div className='flex items-center justify-between'>
@@ -91,14 +92,12 @@ export default function Trip({ tripId }: { tripId: string }) {
 		const {
 			data: busStop,
 			isFetching,
+			isLoading,
 			isError,
 			isPaused,
-		} = useQuery({
-			queryKey: ['connectingBus'],
-			queryFn: () => getStopData({ stopId: tripInfo.actual[0].stop.shortName }),
-			refetchInterval: 10_000,
-		});
+		} = useQuery({ queryKey: ['connectingBus'], queryFn: () => getStopData({ stopId: tripInfo.actual[0].stop.shortName }), refetchInterval: 10_000 });
 
+		if (isFetching) return <div>Loading connect</div>;
 		if (!busStop) return;
 
 		const filteredStop: NormalizedKVGStops = {
