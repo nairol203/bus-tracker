@@ -76,7 +76,7 @@ export default function KVGTable({
 				data.actual.map((actual, index) => (
 					<Link
 						href={`/trip/${actual.tripId}`}
-						className='grid grid-cols-[35px_1fr_75px] justify-between gap-2 rounded bg-secondary p-2 shadow transition duration-200 md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-secondary dark:md:hover:bg-darkMode-accent'
+						className='grid grid-cols-[35px_1fr_75px] justify-between gap-2 rounded-sm bg-secondary p-2 shadow-sm transition duration-200 md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-secondary dark:md:hover:bg-darkMode-accent'
 						key={`${index}-${actual.tripId}`}
 					>
 						<span className='rounded-lg bg-accent text-center text-darkMode-text dark:bg-darkMode-accent'>{actual.patternText}</span>
@@ -85,7 +85,7 @@ export default function KVGTable({
 					</Link>
 				))
 			) : (
-				<div className='rounded bg-secondary p-2 shadow dark:bg-darkMode-secondary'>Keine Daten</div>
+				<div className='rounded-sm bg-secondary p-2 shadow-sm dark:bg-darkMode-secondary'>Keine Daten</div>
 			)}
 		</div>
 	);
@@ -93,7 +93,7 @@ export default function KVGTable({
 
 export function SkeletonKVGTable() {
 	return (
-		<div className='skeleton grid grid-cols-[35px_1fr_75px] justify-between gap-2 rounded p-2'>
+		<div className='skeleton grid grid-cols-[35px_1fr_75px] justify-between gap-2 rounded-sm p-2'>
 			<span>43</span>
 			<span>Kiel Hbf</span>
 			<span className='row-span-2 flex items-center justify-end text-xl'>22:26</span>

@@ -48,7 +48,7 @@ export default function Departures({ stops }: { stops: StopByCharacter[] }) {
 		return (
 			<div className='mx-2 grid gap-2'>
 				<div className='skeleton'>
-					<input className='w-full rounded p-3' placeholder='Suche nach einer Haltestelle' disabled />
+					<input className='w-full rounded-sm p-3' placeholder='Suche nach einer Haltestelle' disabled />
 				</div>
 				<div className='grid grid-cols-2 gap-2 md:flex'>
 					<button className='skeleton z-10 flex gap-2 rounded-full p-2 transition'>
@@ -133,13 +133,13 @@ export default function Departures({ stops }: { stops: StopByCharacter[] }) {
 				<span>Die Haltestelle konnte nicht geladen werden.</span>
 				<button
 					onClick={() => queryClient.refetchQueries({ queryKey: ['stopData'] })}
-					className='rounded bg-primary px-2.5 py-1.5 text-darkMode-text md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-primary dark:text-text dark:md:hover:bg-darkMode-accent'
+					className='rounded-sm bg-primary px-2.5 py-1.5 text-darkMode-text md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-primary dark:text-text dark:md:hover:bg-darkMode-accent'
 				>
 					Erneut versuchen
 				</button>
 				<button
 					onClick={() => router.push('/echtzeit')}
-					className='rounded bg-secondary px-2.5 py-1.5 text-text md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-secondary dark:text-darkMode-text dark:md:hover:bg-darkMode-accent'
+					className='rounded-sm bg-secondary px-2.5 py-1.5 text-text md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-secondary dark:text-darkMode-text dark:md:hover:bg-darkMode-accent'
 				>
 					Zurück
 				</button>
