@@ -8,7 +8,7 @@ import Link from 'next/link';
 export default function RecommendedSearches({
 	recommendedSearches,
 }: {
-	recommendedSearches: (
+	recommendedSearches?: (
 		| {
 				number: string;
 				name: string;
