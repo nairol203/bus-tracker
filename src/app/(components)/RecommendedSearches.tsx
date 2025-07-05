@@ -66,7 +66,7 @@ export default function RecommendedSearches({
 										})
 									}
 								>
-									<Image src='/clock-rotate-left.svg' height={20} width={20} alt='Clock rotate left icon' className='md:group-hover:invert dark:invert' />
+									<Image src='/arrow-up-trend.svg' height={20} width={20} alt='Clock rotate left icon' className='md:group-hover:invert dark:invert' />
 									{stop.name}
 								</Link>
 							),
