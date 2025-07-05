@@ -1,5 +1,6 @@
 'use server';
 
+import { PlausibleResponse } from '@/types/plausible';
 import { API_BASE_URI } from '@/utils/api';
 import moment from 'moment';
 
@@ -116,6 +117,49 @@ export async function getTripInfo(tripId: string): Promise<NormalizedStopInfo | 
 		};
 
 		return normalizedStopInfo;
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+export async function getRecommendedSearches() {
+	try {
+		const res = await fetch('https://analytics.nairol.me/api/v2/query', {
+			method: 'POST',
+			headers: new Headers({
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${process.env.PLAUSIBLE_API_KEY}`,
+			}),
+			body: JSON.stringify({
+				site_id: 'bus.nairol.me',
+				metrics: ['visitors'],
+				date_range: '91d',
+				dimensions: ['event:props:searchQuery'],
+			}),
+			cache: 'no-store',
+		});
+
+		if (!res.ok) {
+			console.log(await res.text().catch(() => 'res.text() failed'));
+			throw new Error(`Request for ${res.url} failed with status code ${res.status} ${res.statusText}`);
+		}
+
+		const data: PlausibleResponse = await res.json();
+
+		const parsedData = data.results
+			.filter((item) => item.dimensions && item.dimensions[0] !== '(none)')
+			.toSorted((a, b) => (b.metrics[0] ?? 0) - (a.metrics[0] ?? 0))
+			.map((item) => {
+				const match = item.dimensions[0].match(/^(\d+)\s+\((.+)\)$/);
+				if (match) {
+					return {
+						number: match[1],
+						name: match[2],
+					};
+				}
+			});
+
+		return parsedData;
 	} catch (error) {
 		console.error(error);
 	}
