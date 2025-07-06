@@ -59,7 +59,7 @@ export default function RecommendedSearches({
 									href={`/stop/${stop.number}`}
 									key={`${index}_${stop.number}`}
 									onClick={() =>
-										plausible('lastSearch', {
+										plausible('recommendedStop', {
 											props: {
 												searchQuery: `${stop.number} (${stop.name})`,
 											},
