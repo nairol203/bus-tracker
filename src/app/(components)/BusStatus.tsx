@@ -29,7 +29,7 @@ const BusStatus: React.FC<{ data: NormalizedActual; isPaused: boolean; useRelati
 	return (
 		<>
 			<span className='row-span-2 flex items-center justify-end'>{getTimeDisplay(data.actualDate, data.actualRelativeTime, useRelative, isPaused)}</span>
-			<span className='col-span-2 text-sm'>{getStatus(data.plannedDate, data.actualDate)}</span>
+			<span className='col-span-2 text-sm text-textMuted'>{getStatus(data.plannedDate, data.actualDate)}</span>
 		</>
 	);
 };

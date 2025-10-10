@@ -28,10 +28,10 @@ export default function KVGTable({
 				data.actual.map((actual, index) => (
 					<Link
 						href={`/trip/${actual.tripId}`}
-						className='grid grid-cols-[35px_1fr_75px] justify-between gap-2 rounded bg-secondary p-2 shadow transition duration-200 md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-secondary dark:md:hover:bg-darkMode-accent'
+						className='grid grid-cols-[35px_1fr_75px] justify-between gap-2 rounded p-2 bg-bg border border-border shadow text-text'
 						key={`${index}-${actual.tripId}`}
 					>
-						<span className='rounded-lg bg-accent text-center text-darkMode-text dark:bg-darkMode-accent'>{actual.patternText}</span>
+						<span className='rounded-lg bg-bgLight border border-border text-center'>{actual.patternText}</span>
 						<span className='whitespace-nowrap'>{actual.direction}</span>
 						<BusStatus data={actual} isPaused={isPaused} useRelative={useRelativeTimes} />
 					</Link>

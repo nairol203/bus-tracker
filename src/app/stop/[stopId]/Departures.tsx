@@ -126,16 +126,10 @@ export default function Departures({ stopId }: { stopId: string }) {
 			<div className='mt-2 grid gap-2'>
 				<h1>Fehler</h1>
 				<span>Die Haltestelle konnte nicht geladen werden.</span>
-				<button
-					onClick={() => queryClient.refetchQueries({ queryKey: ['stopData'] })}
-					className='rounded bg-primary px-2.5 py-1.5 text-darkMode-text md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-primary dark:text-text dark:md:hover:bg-darkMode-accent'
-				>
+				<button onClick={() => queryClient.refetchQueries({ queryKey: ['stopData'] })} className='px-2.5 py-1.5 rounded p-2 bg-bg border border-border shadow text-text'>
 					Erneut versuchen
 				</button>
-				<Link
-					href='/'
-					className='text-center rounded bg-secondary px-2.5 py-1.5 text-text md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-secondary dark:text-darkMode-text dark:md:hover:bg-darkMode-accent'
-				>
+				<Link href='/' className='text-center px-2.5 py-1.5 rounded p-2 bg-bg border border-border shadow text-text'>
 					Zurück zur Startseite
 				</Link>
 			</div>
