@@ -43,16 +43,10 @@ export default function Trip({ tripId }: { tripId: string }) {
 			<div className='mx-2 grid gap-2'>
 				<h1>Fehler</h1>
 				<span>Die Fahrt konnte nicht geladen werden.</span>
-				<button
-					onClick={() => queryClient.refetchQueries({ queryKey: ['tripInfo'] })}
-					className='rounded bg-primary px-2.5 py-1.5 text-darkMode-text md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-primary dark:text-text dark:md:hover:bg-darkMode-accent'
-				>
+				<button onClick={() => queryClient.refetchQueries({ queryKey: ['tripInfo'] })} className='px-2.5 py-1.5 rounded p-2 bg-bgLight border border-border shadow'>
 					Erneut versuchen
 				</button>
-				<button
-					onClick={() => router.back()}
-					className='rounded bg-secondary px-2.5 py-1.5 text-text md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-secondary dark:text-darkMode-text dark:md:hover:bg-darkMode-accent'
-				>
+				<button onClick={() => router.back()} className='px-2.5 py-1.5 rounded p-2 bg-bg border border-border shadow'>
 					Zurück
 				</button>
 			</div>
@@ -121,10 +115,7 @@ export default function Trip({ tripId }: { tripId: string }) {
 				<KVGTable data={filteredStop} isPaused={isPaused} />
 				{busStop.actual.filter((a) => tripInfo.routeName !== a.patternText && a.actualRelativeTime < 1800 && a.actualDate > tripInfo.actual[0].actualDate).length !==
 					filteredStop.actual.length && (
-					<Link
-						className='rounded text-center p-2 bg-secondary shadow transition duration-200 md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-secondary dark:md:hover:bg-darkMode-accent'
-						href={`/stop/${tripInfo.actual[0].stop.shortName}`}
-					>
+					<Link className='rounded text-center p-2 bg-bg border border-border shadow' href={`/stop/${tripInfo.actual[0].stop.shortName}`}>
 						Mehr anzeigen
 					</Link>
 				)}
@@ -157,14 +148,14 @@ export default function Trip({ tripId }: { tripId: string }) {
 					{stops.map((a, index) => (
 						<>
 							<div
-								className={`flex items-center justify-center ${a.status === 'DEPARTED' ? 'bg-accent/50' : 'bg-accent'} ${index === 0 ? 'rounded-t-full mt-0.5' : ''}  ${index === stops.length - 1 ? 'rounded-b-full mb-0.5' : ''}`}
+								className={`flex items-center justify-center ${a.status === 'DEPARTED' ? 'bg-bg' : 'bg-bgLight'} ${index === 0 ? 'rounded-t-full mt-0.5' : ''}  ${index === stops.length - 1 ? 'rounded-b-full mb-0.5' : ''}`}
 							>
-								<div className={`w-2 h-2 bg-secondary rounded-full`}></div>
+								<div className={`w-2 h-2 bg-textMuted rounded-full`}></div>
 							</div>
 							<Link
 								href={`/stop/${a.stop.shortName}`}
 								key={a.stopSequenceNumber}
-								className={`flex items-center justify-between gap-2 rounded bg-secondary p-2 my-0.5 shadow transition duration-200 md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-secondary dark:md:hover:bg-darkMode-accent ${a.status === 'DEPARTED' ? 'opacity-50' : ''}`}
+								className={`flex items-center justify-between gap-2 my-0.5 rounded p-2 bg-bg border border-border shadow ${a.status === 'DEPARTED' ? 'bg-bgDark border-bgDark' : ''}`}
 							>
 								<span>
 									{a.stop.name}
@@ -183,7 +174,7 @@ export default function Trip({ tripId }: { tripId: string }) {
 	return (
 		<div className='mx-2 grid gap-3'>
 			<h1 className='flex gap-2'>
-				<span className='rounded-lg bg-accent px-2 text-center text-darkMode-text dark:bg-darkMode-accent'>{tripInfo.routeName}</span>
+				<span className='rounded-lg px-2 bg-bgLight border border-border'>{tripInfo.routeName}</span>
 				<span>{tripInfo.directionText}</span>
 			</h1>
 			{tripInfo.actual.length ? (
@@ -194,10 +185,7 @@ export default function Trip({ tripId }: { tripId: string }) {
 			) : (
 				<>
 					<span>Der Bus hat die Endstation erreicht.</span>
-					<button
-						onClick={() => router.back()}
-						className='rounded bg-primary px-2.5 py-1.5 text-darkMode-text md:hover:bg-accent md:hover:text-darkMode-text dark:bg-darkMode-primary dark:text-text dark:md:hover:bg-darkMode-accent'
-					>
+					<button onClick={() => router.back()} className='px-2.5 py-1.5 rounded p-2 bg-bgLight border border-border shadow'>
 						Zurück
 					</button>
 				</>

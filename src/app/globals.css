@@ -4,37 +4,53 @@
 
 @layer base {
 	:root {
-		color-scheme: light dark;
+		--bg-light: 0 0% 100%;
+		--bg: 0 0% 95%;
+		--bg-dark: 0 0% 90%;
+		--text: 0 0% 5%;
+		--text-muted: 0 0% 30%;
+		--border: 0 0% 95%;
+		--highlight: 0 0% 100%;
+	}
+
+	.dark {
+		--bg-light: 0 0% 10%;
+		--bg: 0 0% 5%;
+		--bg-dark: 0 0% 0%;
+		--text: 0 0% 95%;
+		--text-muted: 0 0% 70%;
+		--border: 0 0% 30%;
+		--highlight: 0 0% 60%;
 	}
 
 	body {
-		@apply bg-background text-text dark:bg-darkMode-background dark:text-darkMode-text;
+		@apply text-textMuted bg-bgDark;
 	}
 
 	h1,
 	.h1 {
-		@apply text-2xl font-medium;
+		@apply text-text text-2xl font-medium;
 	}
 
 	h2,
 	.h2 {
-		@apply text-xl font-medium;
+		@apply text-text text-xl font-medium;
 	}
 
 	h3,
 	.h3 {
-		@apply text-lg;
+		@apply text-text text-lg;
 	}
 
 	h4,
 	.h4 {
-		@apply text-base;
+		@apply text-text text-base;
 	}
 }
 
 @layer components {
 	.skeleton {
-		@apply relative animate-pulse p-0.5 before:absolute before:inset-0 before:rounded-md before:bg-secondary dark:before:bg-darkMode-secondary;
+		@apply relative animate-pulse p-0.5 before:absolute before:inset-0 before:rounded-md before:bg-bgLight;
 	}
 }
 
