@@ -17,6 +17,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 	return {
 		title: `${data?.routeName && data.directionText ? `${data.routeName} ${data.directionText} | KVG Bus Tracker` : 'KVG Bus Tracker'}`,
+		description: `Aktuelle Abfahrtszeiten ${data ? `für die Linie ${data.routeName} Richtung ${data.directionText}` : 'aller Buslinien der KVG Kiel'}. Echtzeit-Infos${data ? ' der KVG Kiel' : ''}, alle Buslinien und Verspätungen auf einen Blick.`,
+		openGraph: {
+			title: `${data?.routeName && data.directionText ? `${data.routeName} ${data.directionText} | KVG Bus Tracker` : 'KVG Bus Tracker'}`,
+			description: `Aktuelle Abfahrtszeiten ${data ? `für die Linie ${data.routeName} Richtung ${data.directionText}` : 'aller Buslinien der KVG Kiel'}. Echtzeit-Infos${data ? ' der KVG Kiel' : ''}, alle Buslinien und Verspätungen auf einen Blick.`,
+		},
 	};
 }
 
