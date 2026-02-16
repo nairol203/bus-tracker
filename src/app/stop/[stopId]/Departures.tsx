@@ -11,7 +11,7 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
-export default function Departures({ stopId }: { stopId: string }) {
+export default function Departures({ stopId, data: initialStopData }: { stopId: string; data: NormalizedKVGStops | undefined }) {
 	const searchParams = useSearchParams();
 
 	const routeId = searchParams.get('routeId');
@@ -28,6 +28,7 @@ export default function Departures({ stopId }: { stopId: string }) {
 	} = useQuery({
 		queryKey: ['stopData', stopId, routeId, direction],
 		queryFn: async () => getStopData({ stopId, direction, routeId }),
+		initialData: initialStopData,
 		placeholderData: keepPreviousData,
 		refetchInterval: 15_000,
 	});
@@ -65,6 +66,7 @@ export default function Departures({ stopId }: { stopId: string }) {
 					<RouteFilter stop={busStop} />
 					<DirectionFilter stop={busStop} />
 				</div>
+				<noscript>⚠️ Bitte aktivieren Sie JavaScript, um die aktuellen Abfahrtszeiten zu sehen.</noscript>
 				{isPlaceholderData ? (
 					<div className='grid gap-2'>
 						<SkeletonKVGTable />

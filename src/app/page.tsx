@@ -5,6 +5,7 @@ export default function Page() {
 	return (
 		<div className='mx-2 grid gap-2'>
 			<Searchbar />
+			<noscript>⚠️ Bitte aktivieren Sie JavaScript, um die Suche zu benutzen.</noscript>
 			<RecommendedSearches />
 		</div>
 	);

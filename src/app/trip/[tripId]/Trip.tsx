@@ -19,7 +19,7 @@ function getTimeDisplay(date: Date, useRelative: boolean, isPaused: boolean, dep
 	return timeDifferenceMin < 1 ? 'Sofort' : `${timeDifferenceMin} min`;
 }
 
-export default function Trip({ tripId }: { tripId: string }) {
+export default function Trip({ tripId, data: initialTripData }: { tripId: string; data: NormalizedStopInfo | undefined }) {
 	const router = useRouter();
 	const {
 		data: tripInfo,
@@ -30,6 +30,7 @@ export default function Trip({ tripId }: { tripId: string }) {
 	} = useQuery({
 		queryKey: ['tripInfo', tripId],
 		queryFn: () => getTripInfo(tripId),
+		initialData: initialTripData,
 		refetchInterval: 15_000,
 	});
 
@@ -141,6 +142,7 @@ export default function Trip({ tripId }: { tripId: string }) {
 				<span className='rounded-lg bg-accent px-2 text-center text-darkMode-text dark:bg-darkMode-accent'>{tripInfo.routeName}</span>
 				<span>{tripInfo.directionText}</span>
 			</h1>
+			<noscript>⚠️ Bitte aktivieren Sie JavaScript, um die aktuellen Abfahrtszeiten und Anschlussbusse zu sehen.</noscript>
 			{tripInfo.actual.length ? (
 				<>
 					<ConnectingBus />

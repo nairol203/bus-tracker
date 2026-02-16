@@ -26,5 +26,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Page({ params }: Props) {
-	return <Departures stopId={(await params).stopId} />;
+	const data = await getStopData({ stopId: (await params).stopId });
+	return <Departures stopId={(await params).stopId} data={data} />;
 }
