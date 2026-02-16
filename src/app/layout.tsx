@@ -9,6 +9,7 @@ import Link from 'next/link';
 import SettingsMenu from './(components)/SettingsMenu';
 
 export const metadata: Metadata = {
+	metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
 	title: 'KVG Bus Tracker',
 	description: 'Aktuelle Abfahrtszeiten aller Buslinien der KVG Kiel. Echtzeit-Infos, alle Buslinien und Verspätungen auf einen Blick.',
 	authors: [
