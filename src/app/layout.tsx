@@ -1,13 +1,14 @@
 import React from 'react';
 import './globals.css';
 import Providers from '@/utils/Providers';
+import { Metadata } from 'next';
 import PlausibleProvider from 'next-plausible';
 import { ThemeProvider } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 import SettingsMenu from './(components)/SettingsMenu';
 
-export const metadata = {
+export const metadata: Metadata = {
 	title: 'KVG Bus Tracker',
 	description: 'Aktuelle Abfahrtszeiten aller Buslinien der KVG Kiel. Echtzeit-Infos, alle Buslinien und Verspätungen auf einen Blick.',
 	authors: [
