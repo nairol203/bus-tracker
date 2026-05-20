@@ -51,7 +51,7 @@ function TrackerContent() {
             setSelectedStop(parsed);
             return;
           }
-        } catch { }
+        } catch {}
       }
 
       // If we don't know the name yet, show a placeholder until stops loads
@@ -75,7 +75,7 @@ function TrackerContent() {
         const params = new URLSearchParams(searchParams.toString());
         params.set("stop", parsed.number || parsed.id);
         router.replace(`/?${params.toString()}`);
-      } catch { }
+      } catch {}
     }
   }, [searchParams, router, stopsData]);
 

@@ -36,7 +36,7 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
       try {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setRecentStops(JSON.parse(saved));
-      } catch { }
+      } catch {}
     }
   }, []);
 
@@ -83,9 +83,9 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
     query.trim() === ""
       ? []
       : fuse
-        .search(query)
-        .map((result) => result.item)
-        .slice(0, 8);
+          .search(query)
+          .map((result) => result.item)
+          .slice(0, 8);
 
   const showSuggestions = isFocused && query.trim() === "";
   const suggestionsToDisplay =
