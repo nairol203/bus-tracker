@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+
 import { DeparturesResponseSchema } from "@/lib/schemas";
 
 export async function GET(request: Request) {

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Bus, BusFront } from "lucide-react";
 import useSWR from "swr";
-import Searchbar, { Stop } from "@/components/Searchbar";
+
 import DeparturesList from "@/components/DeparturesList";
+import Searchbar, { Stop } from "@/components/Searchbar";
 import TripDetails from "@/components/TripDetails";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -108,22 +109,22 @@ function TrackerContent() {
 
   return (
     <>
-      <header className="pt-16 pb-8 px-4 text-center z-10">
+      <header className="z-10 px-4 pt-16 pb-8 text-center">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center justify-center p-3 bg-surface border border-border rounded-2xl shadow-xl mb-6"
+          className="bg-surface border-border mb-6 inline-flex items-center justify-center rounded-2xl border p-3 shadow-xl"
         >
-          <BusFront className="w-8 h-8 text-brand" />
+          <BusFront className="text-brand h-8 w-8" />
         </motion.div>
         <motion.h1
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight mb-4"
+          className="text-foreground mb-4 text-4xl font-extrabold tracking-tight md:text-5xl"
         >
           KVG Live{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-light to-brand">
+          <span className="from-brand-light to-brand bg-gradient-to-r bg-clip-text text-transparent">
             Tracker
           </span>
         </motion.h1>
@@ -131,13 +132,13 @@ function TrackerContent() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-muted text-lg max-w-xl mx-auto"
+          className="text-muted mx-auto max-w-xl text-lg"
         >
           Echtzeit Abfahrten und Routen für Kiel.
         </motion.p>
       </header>
 
-      <main className="flex-1 w-full max-w-3xl mx-auto px-4 z-10 flex flex-col mb-16">
+      <main className="z-10 mx-auto mb-16 flex w-full max-w-3xl flex-1 flex-col px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -160,8 +161,8 @@ function TrackerContent() {
             transition={{ delay: 0.5 }}
             className="mt-16 flex flex-col items-center justify-center opacity-50"
           >
-            <Bus className="w-16 h-16 text-muted mb-4" />
-            <p className="text-muted text-center max-w-sm">
+            <Bus className="text-muted mb-4 h-16 w-16" />
+            <p className="text-muted max-w-sm text-center">
               Suchen und wählen Sie oben eine Haltestelle, um Live-Abfahrten zu
               sehen.
             </p>
@@ -181,17 +182,17 @@ function TrackerContent() {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background relative flex flex-col">
+    <div className="bg-background relative flex min-h-screen flex-col">
       {/* Decorative Background Gradients */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand/20 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-brand-dark/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="bg-brand/20 pointer-events-none absolute top-[-10%] left-[-10%] h-[40%] w-[40%] rounded-full blur-[120px]" />
+        <div className="bg-brand-dark/20 pointer-events-none absolute right-[-10%] bottom-[-10%] h-[40%] w-[40%] rounded-full blur-[120px]" />
       </div>
 
       <Suspense
         fallback={
-          <div className="flex-1 flex items-center justify-center min-h-screen z-10 relative">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand"></div>
+          <div className="relative z-10 flex min-h-screen flex-1 items-center justify-center">
+            <div className="border-brand h-12 w-12 animate-spin rounded-full border-t-2 border-b-2"></div>
           </div>
         }
       >

@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import useSWR from "swr";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, MapPin, Bus } from "lucide-react";
 import { getDelayMinutes } from "@/utils/time";
+import { AnimatePresence, motion } from "framer-motion";
+import { Bus, MapPin, X } from "lucide-react";
+import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -46,27 +46,27 @@ export default function TripDetails({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50"
+            className="bg-background/80 fixed inset-0 z-50 backdrop-blur-sm"
           />
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-            className="fixed top-0 right-0 h-full w-full max-w-md bg-surface border-l border-border shadow-2xl z-50 flex flex-col"
+            className="bg-surface border-border fixed top-0 right-0 z-50 flex h-full w-full max-w-md flex-col border-l shadow-2xl"
           >
-            <div className="p-6 border-b border-border flex items-start justify-between bg-surface">
+            <div className="border-border bg-surface flex items-start justify-between border-b p-6">
               <div>
-                <div className="flex items-center space-x-3 mb-2">
-                  <div className="bg-brand text-white px-3 py-1 rounded-lg font-bold">
+                <div className="mb-2 flex items-center space-x-3">
+                  <div className="bg-brand rounded-lg px-3 py-1 font-bold text-white">
                     {line}
                   </div>
-                  <h2 className="text-xl font-bold text-foreground">
+                  <h2 className="text-foreground text-xl font-bold">
                     {destination}
                   </h2>
                 </div>
-                <p className="text-sm text-muted flex items-center mt-1">
-                  <Bus className="w-4 h-4 mr-2 text-brand" />
+                <p className="text-muted mt-1 flex items-center text-sm">
+                  <Bus className="text-brand mr-2 h-4 w-4" />
                   {data?.actual && data.actual.length > 0 ? (
                     <span>
                       Nächster Halt:{" "}
@@ -81,9 +81,9 @@ export default function TripDetails({
               </div>
               <button
                 onClick={onClose}
-                className="p-2 bg-background hover:bg-surface-hover text-muted hover:text-foreground rounded-full transition-colors"
+                className="bg-background hover:bg-surface-hover text-muted hover:text-foreground rounded-full p-2 transition-colors"
               >
-                <X className="w-5 h-5" />
+                <X className="h-5 w-5" />
               </button>
             </div>
 
@@ -93,17 +93,17 @@ export default function TripDetails({
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div
                       key={i}
-                      className="flex items-center space-x-4 animate-pulse"
+                      className="flex animate-pulse items-center space-x-4"
                     >
-                      <div className="w-4 h-4 rounded-full bg-border" />
-                      <div className="h-4 bg-border rounded w-3/4" />
+                      <div className="bg-border h-4 w-4 rounded-full" />
+                      <div className="bg-border h-4 w-3/4 rounded" />
                     </div>
                   ))}
                 </div>
               ) : (
                 <div className="relative">
-                  <div className="absolute top-2 bottom-2 left-[7px] w-0.5 bg-border z-0" />
-                  <div className="space-y-6 relative z-10">
+                  <div className="bg-border absolute top-2 bottom-2 left-[7px] z-0 w-0.5" />
+                  <div className="relative z-10 space-y-6">
                     {(() => {
                       const allPassages = [
                         ...(data?.old || []),
@@ -111,7 +111,7 @@ export default function TripDetails({
                       ];
                       if (allPassages.length === 0)
                         return (
-                          <p className="text-muted text-center py-4">
+                          <p className="text-muted py-4 text-center">
                             Keine Routendaten verfügbar
                           </p>
                         );
@@ -149,21 +149,21 @@ export default function TripDetails({
                             >
                               <div className="relative mt-1">
                                 <div
-                                  className={`flex-shrink-0 w-4 h-4 rounded-full border-2 ${isNextStop ? "border-brand bg-brand shadow-[0_0_10px_rgba(59,130,246,0.5)]" : isLast ? "border-brand bg-brand" : isPast ? "border-border bg-surface" : "border-brand bg-surface"}`}
+                                  className={`h-4 w-4 flex-shrink-0 rounded-full border-2 ${isNextStop ? "border-brand bg-brand shadow-[0_0_10px_rgba(59,130,246,0.5)]" : isLast ? "border-brand bg-brand" : isPast ? "border-border bg-surface" : "border-brand bg-surface"}`}
                                 />
                                 {isNextStop && (
-                                  <span className="absolute top-0 left-0 animate-ping h-4 w-4 rounded-full bg-brand opacity-75"></span>
+                                  <span className="bg-brand absolute top-0 left-0 h-4 w-4 animate-ping rounded-full opacity-75"></span>
                                 )}
                               </div>
-                              <div className="flex-1 flex justify-between items-start">
+                              <div className="flex flex-1 items-start justify-between">
                                 <div>
                                   <p
-                                    className={`font-medium ${isNextStop ? "text-brand font-bold text-lg" : isLast ? "text-foreground font-bold" : "text-foreground"}`}
+                                    className={`font-medium ${isNextStop ? "text-brand text-lg font-bold" : isLast ? "text-foreground font-bold" : "text-foreground"}`}
                                   >
                                     {passage.stop.name}
                                   </p>
                                   {isNextStop && (
-                                    <p className="text-[10px] text-brand font-bold uppercase tracking-widest mt-1">
+                                    <p className="text-brand mt-1 text-[10px] font-bold tracking-widest uppercase">
                                       Nächster Halt
                                     </p>
                                   )}
@@ -172,17 +172,17 @@ export default function TripDetails({
                                   <div className="flex flex-col items-end">
                                     {showDiff ? (
                                       <>
-                                        <span className="text-[10px] line-through text-muted">
+                                        <span className="text-muted text-[10px] line-through">
                                           {passage.plannedTime}
                                         </span>
                                         <span
-                                          className={`text-sm font-mono px-2 py-0.5 rounded border ${isDelayed ? "text-red-400 bg-red-500/10 border-red-500/20" : "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"}`}
+                                          className={`rounded border px-2 py-0.5 font-mono text-sm ${isDelayed ? "border-red-500/20 bg-red-500/10 text-red-400" : "border-emerald-500/20 bg-emerald-500/10 text-emerald-400"}`}
                                         >
                                           {passage.actualTime}
                                         </span>
                                       </>
                                     ) : (
-                                      <span className="text-sm font-mono text-muted bg-background px-2 py-0.5 rounded">
+                                      <span className="text-muted bg-background rounded px-2 py-0.5 font-mono text-sm">
                                         {timeString}
                                       </span>
                                     )}

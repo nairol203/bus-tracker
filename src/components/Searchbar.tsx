@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { Search, Loader2, Clock, Star, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import Fuse from "fuse.js";
+import { Clock, Loader2, Search, Star, X } from "lucide-react";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -93,14 +93,14 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
     recentStops.length > 0 ? "Zuletzt gesucht" : "Empfohlen";
 
   return (
-    <div className="relative w-full max-w-2xl mx-auto z-50">
+    <div className="relative z-50 mx-auto w-full max-w-2xl">
       <div
-        className={`relative flex items-center w-full px-4 py-3 bg-surface border transition-colors duration-300 rounded-2xl shadow-lg ${isFocused ? "border-brand" : "border-border"}`}
+        className={`bg-surface relative flex w-full items-center rounded-2xl border px-4 py-3 shadow-lg transition-colors duration-300 ${isFocused ? "border-brand" : "border-border"}`}
       >
-        <Search className="w-5 h-5 text-muted mr-3" />
+        <Search className="text-muted mr-3 h-5 w-5" />
         <input
           type="text"
-          className="w-full bg-transparent border-none outline-none text-foreground placeholder:text-muted"
+          className="text-foreground placeholder:text-muted w-full border-none bg-transparent outline-none"
           placeholder="Haltestelle suchen..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -117,7 +117,7 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
             }
           }}
         />
-        {isLoading && <Loader2 className="w-5 h-5 text-brand animate-spin" />}
+        {isLoading && <Loader2 className="text-brand h-5 w-5 animate-spin" />}
       </div>
 
       <AnimatePresence>
@@ -126,14 +126,14 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full left-0 right-0 mt-2 bg-surface border border-border rounded-xl shadow-2xl overflow-hidden"
+            className="bg-surface border-border absolute top-full right-0 left-0 mt-2 overflow-hidden rounded-xl border shadow-2xl"
           >
             {showSuggestions && (
-              <div className="px-4 py-2 bg-surface-hover/50 text-xs font-semibold text-muted uppercase tracking-wider flex items-center">
+              <div className="bg-surface-hover/50 text-muted flex items-center px-4 py-2 text-xs font-semibold tracking-wider uppercase">
                 {recentStops.length > 0 ? (
-                  <Clock className="w-3 h-3 mr-2" />
+                  <Clock className="mr-2 h-3 w-3" />
                 ) : (
-                  <Star className="w-3 h-3 mr-2" />
+                  <Star className="mr-2 h-3 w-3" />
                 )}
                 {suggestionLabel}
               </div>
@@ -143,13 +143,13 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
                 (stop) => (
                   <li
                     key={stop.id}
-                    className="flex items-center hover:bg-surface-hover transition-colors px-2"
+                    className="hover:bg-surface-hover flex items-center px-2 transition-colors"
                   >
                     <button
                       onClick={() => handleSelect(stop)}
-                      className="flex-1 text-left px-2 py-3"
+                      className="flex-1 px-2 py-3 text-left"
                     >
-                      <span className="font-medium text-foreground">
+                      <span className="text-foreground font-medium">
                         {stop.name}
                       </span>
                     </button>
@@ -162,10 +162,10 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
                             e.stopPropagation();
                           }}
                           onClick={(e) => handleRemoveRecent(e, stop.id)}
-                          className="p-2 mr-2 rounded-full hover:bg-border text-muted hover:text-red-400 transition-colors"
+                          className="hover:bg-border text-muted mr-2 rounded-full p-2 transition-colors hover:text-red-400"
                           title="Aus Verlauf löschen"
                         >
-                          <X className="w-4 h-4" />
+                          <X className="h-4 w-4" />
                         </button>
                       )}
                   </li>

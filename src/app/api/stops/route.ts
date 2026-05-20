@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+
 import { StopsResponseSchema } from "@/lib/schemas";
 
 export const revalidate = 86400; // Cache the result for 24 hours

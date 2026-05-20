@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+
 import { TripResponseSchema } from "@/lib/schemas";
 
 export async function GET(request: Request) {
