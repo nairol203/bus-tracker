@@ -39,21 +39,6 @@ export default function TrackerContent() {
         }
       }
 
-      // Fallback to localStorage cache so we don't blink "Lade Haltestelle..." if possible
-      const saved = localStorage.getItem("kvg-selected-stop");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (
-            parsed.number === stopIdOrNumber ||
-            parsed.id === stopIdOrNumber
-          ) {
-            setSelectedStop(parsed);
-            return;
-          }
-        } catch {}
-      }
-
       // If we don't know the name yet, show a placeholder until stops loads
       const isNumber = stopIdOrNumber.length < 10;
       setSelectedStop({
@@ -61,27 +46,13 @@ export default function TrackerContent() {
         name: "Lade Haltestelle...",
         number: isNumber ? stopIdOrNumber : undefined,
       });
-      return;
+    } else {
+      setSelectedStop(null);
     }
-
-    // 2. Fallback to localStorage if URL is clean
-    const saved = localStorage.getItem("kvg-selected-stop");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setSelectedStop(parsed);
-
-        // Sync to URL so it's instantly shareable without cluttering history
-        const params = new URLSearchParams(searchParams.toString());
-        params.set("stop", parsed.number || parsed.id);
-        router.replace(`/?${params.toString()}`);
-      } catch {}
-    }
-  }, [searchParams, router, stopsData]);
+  }, [searchParams, stopsData]);
 
   const handleSelectStop = (stop: Stop) => {
     setSelectedStop(stop);
-    localStorage.setItem("kvg-selected-stop", JSON.stringify(stop));
 
     // Update URL to make it shareable, pushing state to history
     // We intentionally wipe out lines/dirs filters when selecting a NEW stop
