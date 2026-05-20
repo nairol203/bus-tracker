@@ -10,7 +10,7 @@
   --color-border: #334155;
   --color-foreground: #f8fafc;
   --color-muted: #94a3b8;
-  
+
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
 }

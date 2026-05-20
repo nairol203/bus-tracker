@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 // 1. Stops
 export const StopSchema = z.object({
