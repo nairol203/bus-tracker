@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Fuse from "fuse.js";
 import { Clock, Loader2, Search, Star, X } from "lucide-react";
@@ -127,7 +127,7 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
         <input
           ref={inputRef}
           type="text"
-          className="text-foreground placeholder:text-muted w-full border-none bg-transparent outline-none pr-12"
+          className="text-foreground placeholder:text-muted w-full border-none bg-transparent pr-12 outline-none"
           placeholder="Haltestelle suchen..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -148,16 +148,18 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
           }}
         />
         {!isFocused && !query && (
-          <div className="hidden md:flex absolute right-4 items-center gap-1 pointer-events-none text-muted text-[10px] font-bold">
-            <kbd className="bg-surface-hover rounded px-1.5 py-0.5 border border-border">
+          <div className="text-muted pointer-events-none absolute right-4 hidden items-center gap-1 text-[10px] font-bold md:flex">
+            <kbd className="bg-surface-hover border-border rounded border px-1.5 py-0.5">
               {isMac ? "⌘" : "Ctrl"}
             </kbd>
-            <kbd className="bg-surface-hover rounded px-1.5 py-0.5 border border-border">
+            <kbd className="bg-surface-hover border-border rounded border px-1.5 py-0.5">
               K
             </kbd>
           </div>
         )}
-        {isLoading && <Loader2 className="text-brand absolute right-4 h-5 w-5 animate-spin" />}
+        {isLoading && (
+          <Loader2 className="text-brand absolute right-4 h-5 w-5 animate-spin" />
+        )}
       </div>
 
       <AnimatePresence>

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+
 import { getAllStops } from "@/lib/kvg";
 
 export const revalidate = 86400; // Cache the result for 24 hours

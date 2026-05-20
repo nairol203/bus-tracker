@@ -7,7 +7,7 @@ export async function getAllStops(): Promise<Stop[]> {
   const fetchPromises = characters.map(async (char) => {
     const res = await fetch(
       `https://kvg-internetservice-proxy.p.networkteam.com/internetservice/services/lookup/stopsByCharacter?character=${char}`,
-      { next: { revalidate: 86400 } } // Cache the result for 24 hours
+      { next: { revalidate: 86400 } }, // Cache the result for 24 hours
     );
     if (!res.ok) return [];
     const rawData = await res.json();
