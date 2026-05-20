@@ -33,6 +33,7 @@ function TrackerContent() {
           (s) => s.number === stopIdOrNumber || s.id === stopIdOrNumber,
         );
         if (found) {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setSelectedStop(found);
           return;
         }
@@ -50,7 +51,7 @@ function TrackerContent() {
             setSelectedStop(parsed);
             return;
           }
-        } catch (e) {}
+        } catch { }
       }
 
       // If we don't know the name yet, show a placeholder until stops loads
@@ -74,7 +75,7 @@ function TrackerContent() {
         const params = new URLSearchParams(searchParams.toString());
         params.set("stop", parsed.number || parsed.id);
         router.replace(`/?${params.toString()}`);
-      } catch (e) {}
+      } catch { }
     }
   }, [searchParams, router, stopsData]);
 

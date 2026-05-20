@@ -34,8 +34,9 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
     const saved = localStorage.getItem("kvg-recent-stops");
     if (saved) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setRecentStops(JSON.parse(saved));
-      } catch (e) {}
+      } catch { }
     }
   }, []);
 
@@ -82,9 +83,9 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
     query.trim() === ""
       ? []
       : fuse
-          .search(query)
-          .map((result) => result.item)
-          .slice(0, 8);
+        .search(query)
+        .map((result) => result.item)
+        .slice(0, 8);
 
   const showSuggestions = isFocused && query.trim() === "";
   const suggestionsToDisplay =
