@@ -1,23 +1,48 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand: #3b82f6;
-  --color-brand-light: #60a5fa;
-  --color-brand-dark: #2563eb;
-  --color-background: #0f172a;
-  --color-surface: #1e293b;
-  --color-surface-hover: #334155;
-  --color-border: #334155;
-  --color-foreground: #f8fafc;
-  --color-muted: #94a3b8;
+  --color-brand: var(--brand);
+  --color-brand-light: var(--brand-light);
+  --color-brand-dark: var(--brand-dark);
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
-:root {
-  --background: #0f172a;
-  --foreground: #f8fafc;
+@layer base {
+  :root {
+    --brand: #3b82f6;
+    --brand-light: #60a5fa;
+    --brand-dark: #2563eb;
+    
+    /* Light Mode */
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --surface-hover: #f1f5f9;
+    --border: #e2e8f0;
+    --foreground: #0f172a;
+    --muted: #64748b;
+  }
+
+  .dark {
+    /* Dark Mode */
+    --brand: #3b82f6;
+    --brand-light: #60a5fa;
+    --brand-dark: #2563eb;
+    
+    --background: #0f172a;
+    --surface: #1e293b;
+    --surface-hover: #334155;
+    --border: #334155;
+    --foreground: #f8fafc;
+    --muted: #94a3b8;
+  }
 }
 
 body {

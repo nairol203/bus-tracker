@@ -9,6 +9,7 @@ import useSWR from "swr";
 import DeparturesList from "@/components/DeparturesList";
 import Searchbar, { Stop } from "@/components/Searchbar";
 import TripDetails from "@/components/TripDetails";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -81,7 +82,10 @@ export default function TrackerContent() {
 
   return (
     <>
-      <header className="z-10 px-4 pt-16 pb-8 text-center">
+      <header className="z-10 px-4 pt-16 pb-8 text-center relative">
+        <div className="absolute right-4 top-4">
+          <ThemeToggle />
+        </div>
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}

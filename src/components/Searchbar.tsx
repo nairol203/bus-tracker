@@ -34,13 +34,13 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsMac(navigator.platform.toUpperCase().indexOf("MAC") >= 0);
     }
 
     const saved = localStorage.getItem("kvg-recent-stops");
     if (saved) {
       try {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setRecentStops(JSON.parse(saved));
       } catch {}
     }
