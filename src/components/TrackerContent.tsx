@@ -95,7 +95,7 @@ export default function TrackerContent() {
           transition={{ delay: 0.1 }}
           className="text-foreground mb-4 text-4xl font-extrabold tracking-tight md:text-5xl"
         >
-          KVG Live{" "}
+          KVG Bus{" "}
           <span className="from-brand-light to-brand bg-gradient-to-r bg-clip-text text-transparent">
             Tracker
           </span>

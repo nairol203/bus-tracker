@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "KVG Tracker",
-  description: "KVG Tracker - Echtzeit Abfahrten und Routen für Kiel.",
+  title: "KVG Bus Tracker",
+  description: "KVG Bus Tracker - Echtzeit Abfahrten und Routen für Kiel.",
 };
 
 export default function RootLayout({
