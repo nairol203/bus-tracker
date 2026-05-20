@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Fuse from "fuse.js";
 import { Clock, Loader2, Search, Star, X } from "lucide-react";
@@ -22,6 +22,8 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [recentStops, setRecentStops] = useState<Stop[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [isMac, setIsMac] = useState(false);
 
   // Kiel recommended stops
   const recommendedStops: Stop[] = [
@@ -31,6 +33,10 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
   ];
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsMac(navigator.platform.toUpperCase().indexOf("MAC") >= 0);
+    }
+
     const saved = localStorage.getItem("kvg-recent-stops");
     if (saved) {
       try {
@@ -38,12 +44,30 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
         setRecentStops(JSON.parse(saved));
       } catch {}
     }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.key === "k" && (e.metaKey || e.ctrlKey)) || e.key === "/") {
+        // Don't intercept if user is typing in another input
+        if (
+          document.activeElement?.tagName === "INPUT" ||
+          document.activeElement?.tagName === "TEXTAREA"
+        ) {
+          if (document.activeElement !== inputRef.current) return;
+        }
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const handleSelect = (stop: Stop) => {
     onSelectStop(stop);
     setQuery("");
     setIsFocused(false);
+    inputRef.current?.blur();
 
     // Update recent stops
     const newRecent = [
@@ -96,19 +120,24 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
   return (
     <div className="relative z-50 mx-auto w-full max-w-2xl">
       <div
-        className={`bg-surface relative flex w-full items-center rounded-2xl border px-4 py-3 shadow-lg transition-colors duration-300 ${isFocused ? "border-brand" : "border-border"}`}
+        className={`bg-surface relative flex w-full items-center rounded-2xl border px-4 py-3 shadow-lg transition-colors duration-300 ${isFocused ? "border-brand" : "border-border"} cursor-text`}
+        onClick={() => inputRef.current?.focus()}
       >
         <Search className="text-muted mr-3 h-5 w-5" />
         <input
+          ref={inputRef}
           type="text"
-          className="text-foreground placeholder:text-muted w-full border-none bg-transparent outline-none"
+          className="text-foreground placeholder:text-muted w-full border-none bg-transparent outline-none pr-12"
           placeholder="Haltestelle suchen..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 200)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Escape") {
+              setIsFocused(false);
+              inputRef.current?.blur();
+            } else if (e.key === "Enter") {
               e.preventDefault();
               if (query.trim() === "" && suggestionsToDisplay.length > 0) {
                 handleSelect(suggestionsToDisplay[0]);
@@ -118,7 +147,17 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
             }
           }}
         />
-        {isLoading && <Loader2 className="text-brand h-5 w-5 animate-spin" />}
+        {!isFocused && !query && (
+          <div className="hidden md:flex absolute right-4 items-center gap-1 pointer-events-none text-muted text-[10px] font-bold">
+            <kbd className="bg-surface-hover rounded px-1.5 py-0.5 border border-border">
+              {isMac ? "⌘" : "Ctrl"}
+            </kbd>
+            <kbd className="bg-surface-hover rounded px-1.5 py-0.5 border border-border">
+              K
+            </kbd>
+          </div>
+        )}
+        {isLoading && <Loader2 className="text-brand absolute right-4 h-5 w-5 animate-spin" />}
       </div>
 
       <AnimatePresence>
