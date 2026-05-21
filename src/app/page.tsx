@@ -4,6 +4,8 @@ import { SWRConfig } from "swr";
 import { getAllStops } from "@/lib/kvg";
 import TrackerContent from "@/components/TrackerContent";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   // Initiate data fetching on the server side
   const stopsPromise = getAllStops();
