@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import Fuse from "fuse.js";
 import { Clock, Loader2, Search, Star, X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());

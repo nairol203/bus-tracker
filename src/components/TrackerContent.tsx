@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
 import { Bus, BusFront } from "lucide-react";
+import { motion } from "motion/react";
 import useSWR from "swr";
 
 import DeparturesList from "@/components/DeparturesList";
@@ -18,23 +18,20 @@ export default function TrackerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedStop, setSelectedStop] = useState<Stop | null>(null);
-  const [isOffline, setIsOffline] = useState(false);
 
-  useEffect(() => {
-    const handleOnline = () => setIsOffline(false);
-    const handleOffline = () => setIsOffline(true);
-
-    if (typeof window !== "undefined") {
-      setIsOffline(!navigator.onLine);
-      window.addEventListener("online", handleOnline);
-      window.addEventListener("offline", handleOffline);
-    }
-
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, []);
+  const isOffline = !useSyncExternalStore(
+    (callback) => {
+      if (typeof window === "undefined") return () => {};
+      window.addEventListener("online", callback);
+      window.addEventListener("offline", callback);
+      return () => {
+        window.removeEventListener("online", callback);
+        window.removeEventListener("offline", callback);
+      };
+    },
+    () => (typeof navigator !== "undefined" ? navigator.onLine : true),
+    () => true,
+  );
 
   const { data: stopsData } = useSWR<Stop[]>("/api/stops", fetcher, {
     revalidateOnFocus: false,

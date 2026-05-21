@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getDelayMinutes } from "@/utils/time";
-import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, Clock, Filter, Navigation, WifiOff } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());

@@ -1,8 +1,8 @@
 "use client";
 
 import { getDelayMinutes } from "@/utils/time";
-import { AnimatePresence, motion } from "framer-motion";
 import { Bus, X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
