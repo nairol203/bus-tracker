@@ -32,16 +32,16 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
   ];
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsMac(navigator.platform.toUpperCase().indexOf("MAC") >= 0);
-    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMac(/Mac/i.test(navigator.userAgent));
 
     const saved = localStorage.getItem("kvg-recent-stops");
     if (saved) {
       try {
         setRecentStops(JSON.parse(saved));
-      } catch {}
+      } catch (err) {
+        console.error("Failed to parse recent stops", err);
+      }
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {

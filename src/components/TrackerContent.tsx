@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Bus, BusFront } from "lucide-react";
@@ -11,25 +11,15 @@ import DeparturesList from "@/components/DeparturesList";
 import Searchbar, { Stop } from "@/components/Searchbar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import TripDetails from "@/components/TripDetails";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function TrackerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isOffline = !useSyncExternalStore(
-    (callback) => {
-      if (typeof window === "undefined") return () => {};
-      window.addEventListener("online", callback);
-      window.addEventListener("offline", callback);
-      return () => {
-        window.removeEventListener("online", callback);
-        window.removeEventListener("offline", callback);
-      };
-    },
-    () => (typeof navigator !== "undefined" ? navigator.onLine : true),
-    () => true,
-  );
+  const isOnline = useOnlineStatus();
+  const isOffline = !isOnline;
 
   const { data: stopsData } = useSWR<Stop[]>("/api/stops", fetcher, {
     revalidateOnFocus: false,

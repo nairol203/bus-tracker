@@ -36,6 +36,9 @@ export default function TripDetails({
     },
   );
 
+  const allPassages = data ? [...(data.old || []), ...(data.actual || [])] : [];
+  const nextStopIdx = data?.old ? data.old.length : 0;
+
   return (
     <AnimatePresence>
       {tripId && (
@@ -103,96 +106,87 @@ export default function TripDetails({
                 <div className="relative">
                   <div className="bg-border absolute top-2 bottom-2 left-[7px] z-0 w-0.5" />
                   <div className="relative z-10 space-y-6">
-                    {(() => {
-                      const allPassages = [
-                        ...(data?.old || []),
-                        ...(data?.actual || []),
-                      ];
-                      if (allPassages.length === 0)
+                    {allPassages.length === 0 && !isLoading ? (
+                      <p className="text-muted py-4 text-center">
+                        Keine Routendaten verfügbar
+                      </p>
+                    ) : (
+                      allPassages.map((passage: StopPassage, idx: number) => {
+                        const isLast = idx === allPassages.length - 1;
+                        const hasTime =
+                          !!passage.actualTime || !!passage.plannedTime;
+                        const timeString =
+                          passage.actualTime || passage.plannedTime;
+
+                        let showDiff = false;
+                        let isDelayed = false;
+                        if (passage.plannedTime && passage.actualTime) {
+                          const delay = getDelayMinutes(
+                            passage.plannedTime,
+                            passage.actualTime,
+                          );
+                          isDelayed = delay > 1;
+                          const isEarly = delay < 0;
+                          showDiff = isDelayed || isEarly;
+                        }
+
+                        const isNextStop =
+                          idx === nextStopIdx &&
+                          data?.actual &&
+                          data.actual.length > 0;
+                        const isPast = idx < nextStopIdx;
+
                         return (
-                          <p className="text-muted py-4 text-center">
-                            Keine Routendaten verfügbar
-                          </p>
-                        );
-
-                      const nextStopIdx = data?.old ? data.old.length : 0;
-
-                      return allPassages.map(
-                        (passage: StopPassage, idx: number) => {
-                          const isLast = idx === allPassages.length - 1;
-                          const hasTime =
-                            !!passage.actualTime || !!passage.plannedTime;
-                          const timeString =
-                            passage.actualTime || passage.plannedTime;
-
-                          let showDiff = false;
-                          let isDelayed = false;
-                          if (passage.plannedTime && passage.actualTime) {
-                            const delay = getDelayMinutes(
-                              passage.plannedTime,
-                              passage.actualTime,
-                            );
-                            isDelayed = delay > 1;
-                            const isEarly = delay < 0;
-                            showDiff = isDelayed || isEarly;
-                          }
-
-                          const isNextStop =
-                            idx === nextStopIdx && data?.actual?.length > 0;
-                          const isPast = idx < nextStopIdx;
-
-                          return (
-                            <div
-                              key={idx}
-                              className={`flex items-start space-x-6 ${isPast ? "opacity-40" : ""}`}
-                            >
-                              <div className="relative mt-1">
-                                <div
-                                  className={`h-4 w-4 flex-shrink-0 rounded-full border-2 ${isNextStop ? "border-brand bg-brand shadow-[0_0_10px_rgba(59,130,246,0.5)]" : isLast ? "border-brand bg-brand" : isPast ? "border-border bg-surface" : "border-brand bg-surface"}`}
-                                />
+                          <div
+                            key={idx}
+                            className={`flex items-start space-x-6 ${isPast ? "opacity-40" : ""}`}
+                          >
+                            <div className="relative mt-1">
+                              <div
+                                className={`h-4 w-4 flex-shrink-0 rounded-full border-2 ${isNextStop ? "border-brand bg-brand shadow-[0_0_10px_rgba(59,130,246,0.5)]" : isLast ? "border-brand bg-brand" : isPast ? "border-border bg-surface" : "border-brand bg-surface"}`}
+                              />
+                              {isNextStop && (
+                                <span className="bg-brand absolute top-0 left-0 h-4 w-4 animate-ping rounded-full opacity-75"></span>
+                              )}
+                            </div>
+                            <div className="flex flex-1 items-start justify-between">
+                              <div>
+                                <p
+                                  className={`font-medium ${isNextStop ? "text-brand text-lg font-bold" : isLast ? "text-foreground font-bold" : "text-foreground"}`}
+                                >
+                                  {passage.stop.name}
+                                </p>
                                 {isNextStop && (
-                                  <span className="bg-brand absolute top-0 left-0 h-4 w-4 animate-ping rounded-full opacity-75"></span>
+                                  <p className="text-brand mt-1 text-[10px] font-bold tracking-widest uppercase">
+                                    Nächster Halt
+                                  </p>
                                 )}
                               </div>
-                              <div className="flex flex-1 items-start justify-between">
-                                <div>
-                                  <p
-                                    className={`font-medium ${isNextStop ? "text-brand text-lg font-bold" : isLast ? "text-foreground font-bold" : "text-foreground"}`}
-                                  >
-                                    {passage.stop.name}
-                                  </p>
-                                  {isNextStop && (
-                                    <p className="text-brand mt-1 text-[10px] font-bold tracking-widest uppercase">
-                                      Nächster Halt
-                                    </p>
+                              {hasTime && (
+                                <div className="flex flex-col items-end">
+                                  {showDiff ? (
+                                    <>
+                                      <span className="text-muted text-[10px] line-through">
+                                        {passage.plannedTime}
+                                      </span>
+                                      <span
+                                        className={`rounded border px-2 py-0.5 font-mono text-sm ${isDelayed ? "border-red-500/20 bg-red-500/10 text-red-400" : "border-emerald-500/20 bg-emerald-500/10 text-emerald-400"}`}
+                                      >
+                                        {passage.actualTime}
+                                      </span>
+                                    </>
+                                  ) : (
+                                    <span className="text-muted bg-background rounded px-2 py-0.5 font-mono text-sm">
+                                      {timeString}
+                                    </span>
                                   )}
                                 </div>
-                                {hasTime && (
-                                  <div className="flex flex-col items-end">
-                                    {showDiff ? (
-                                      <>
-                                        <span className="text-muted text-[10px] line-through">
-                                          {passage.plannedTime}
-                                        </span>
-                                        <span
-                                          className={`rounded border px-2 py-0.5 font-mono text-sm ${isDelayed ? "border-red-500/20 bg-red-500/10 text-red-400" : "border-emerald-500/20 bg-emerald-500/10 text-emerald-400"}`}
-                                        >
-                                          {passage.actualTime}
-                                        </span>
-                                      </>
-                                    ) : (
-                                      <span className="text-muted bg-background rounded px-2 py-0.5 font-mono text-sm">
-                                        {timeString}
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
+                              )}
                             </div>
-                          );
-                        },
-                      );
-                    })()}
+                          </div>
+                        );
+                      })
+                    )}
                   </div>
                 </div>
               )}
