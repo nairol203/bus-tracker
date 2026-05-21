@@ -123,7 +123,14 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
     recentStops.length > 0 ? "Zuletzt gesucht" : "Empfohlen";
 
   return (
-    <div className="relative z-50 mx-auto w-full max-w-2xl">
+    <div
+      className="relative z-50 mx-auto w-full max-w-2xl"
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+          setIsFocused(false);
+        }
+      }}
+    >
       <div
         className={`bg-surface relative flex w-full items-center rounded-2xl border px-4 py-3 shadow-lg transition-colors duration-300 ${isFocused ? "border-brand" : "border-border"} cursor-text`}
         onClick={() => inputRef.current?.focus()}
@@ -137,7 +144,6 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => setTimeout(() => setIsFocused(false), 200)}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
               setIsFocused(false);
