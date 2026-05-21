@@ -87,16 +87,21 @@ export default function RootLayout({
           <div className="flex min-h-screen flex-col">
             {children}
             <footer className="border-border bg-surface mt-auto w-full border-t py-6">
-              <div className="text-muted mx-auto flex max-w-3xl flex-col items-center justify-between gap-4 px-4 text-sm sm:flex-row">
-                <a
-                  href="https://nairol.de"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-brand transition-colors"
-                  suppressHydrationWarning
-                >
-                  © {new Date().getFullYear()} nairol203
-                </a>
+              <div className="text-muted mx-auto flex max-w-3xl flex-col items-center justify-between gap-4 px-4 text-sm md:flex-row">
+                <div className="flex flex-col items-center gap-1 md:items-start">
+                  <a
+                    href="https://nairol.de"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-brand transition-colors"
+                    suppressHydrationWarning
+                  >
+                    © {new Date().getFullYear()} nairol203
+                  </a>
+                  <span className="text-xs opacity-70 text-center md:text-left">
+                    Not affiliated with KVG Kieler Verkehrsgesellschaft mbH
+                  </span>
+                </div>
                 <div className="flex items-center gap-6">
                   <a
                     href="https://github.com/nairol203/bus-tracker"
