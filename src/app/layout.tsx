@@ -98,7 +98,7 @@ export default function RootLayout({
                   >
                     © {new Date().getFullYear()} nairol203
                   </a>
-                  <span className="text-xs opacity-70 text-center md:text-left">
+                  <span className="text-center text-xs opacity-70 md:text-left">
                     Not affiliated with KVG Kieler Verkehrsgesellschaft mbH
                   </span>
                 </div>
