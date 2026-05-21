@@ -12,12 +12,6 @@ export default async function Home() {
 
   return (
     <div className="bg-background relative flex min-h-screen flex-col">
-      {/* Decorative Background Gradients */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="bg-brand/20 pointer-events-none absolute top-[-10%] left-[-10%] h-[40%] w-[40%] rounded-full blur-[120px]" />
-        <div className="bg-brand-dark/20 pointer-events-none absolute right-[-10%] bottom-[-10%] h-[40%] w-[40%] rounded-full blur-[120px]" />
-      </div>
-
       <Suspense
         fallback={
           <div className="relative z-10 flex min-h-screen flex-1 items-center justify-center">
