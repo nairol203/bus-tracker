@@ -36,24 +36,19 @@ export default function TrackerContent() {
     revalidateIfStale: false,
   });
 
-  const stopIdOrNumber = searchParams.get("stop");
+  const stopNumber = searchParams.get("stop");
   const stops = stopsData || [];
 
   let selectedStop: Stop | null = null;
-  if (stopIdOrNumber) {
+  if (stopNumber) {
     if (stops.length > 0) {
-      selectedStop =
-        stops.find(
-          (s) => s.number === stopIdOrNumber || s.id === stopIdOrNumber,
-        ) || null;
+      selectedStop = stops.find((s) => s.number === stopNumber) || null;
     }
 
     if (!selectedStop) {
-      const isNumber = stopIdOrNumber.length < 10;
       selectedStop = {
-        id: isNumber ? "" : stopIdOrNumber,
         name: "Lade Haltestelle...",
-        number: isNumber ? stopIdOrNumber : undefined,
+        number: stopNumber,
       };
     }
   }
@@ -62,7 +57,7 @@ export default function TrackerContent() {
     // Update URL to make it shareable, pushing state to history
     // We intentionally wipe out lines/dirs filters when selecting a NEW stop
     const params = new URLSearchParams();
-    params.set("stop", stop.number || stop.id);
+    params.set("stop", stop.number);
     router.push(`/?${params.toString()}`);
   };
 
@@ -158,8 +153,8 @@ export default function TrackerContent() {
 
         {selectedStop ? (
           <DeparturesList
-            key={selectedStop.number || selectedStop.id}
-            stopId={selectedStop.number || selectedStop.id}
+            key={selectedStop.number}
+            stopNumber={selectedStop.number}
             stopName={selectedStop.name}
             onSelectTrip={handleSelectTrip}
             isOffline={isOffline}

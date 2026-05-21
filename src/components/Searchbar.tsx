@@ -9,9 +9,8 @@ import useSWR from "swr";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export interface Stop {
-  id: string;
   name: string;
-  number?: string;
+  number: string;
 }
 
 interface SearchbarProps {
@@ -27,9 +26,9 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
 
   // Kiel recommended stops
   const recommendedStops: Stop[] = [
-    { id: "1610075375461732195", name: "Hauptbahnhof", number: "2387" },
-    { id: "1610075375461731969", name: "Uni-Westring", number: "1491" },
-    { id: "1610075375461731909", name: "Reventloubrücke", number: "1237" },
+    { name: "Hauptbahnhof", number: "2387" },
+    { name: "Uni-Westring", number: "1491" },
+    { name: "Reventloubrücke", number: "1237" },
   ];
 
   useEffect(() => {
@@ -72,15 +71,15 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
     // Update recent stops
     const newRecent = [
       stop,
-      ...recentStops.filter((s) => s.id !== stop.id),
+      ...recentStops.filter((s) => s.number !== stop.number),
     ].slice(0, 5);
     setRecentStops(newRecent);
     localStorage.setItem("kvg-recent-stops", JSON.stringify(newRecent));
   };
 
-  const handleRemoveRecent = (e: React.MouseEvent, stopId: string) => {
+  const handleRemoveRecent = (e: React.MouseEvent, stopNumber: string) => {
     e.stopPropagation();
-    const newRecent = recentStops.filter((s) => s.id !== stopId);
+    const newRecent = recentStops.filter((s) => s.number !== stopNumber);
     setRecentStops(newRecent);
     localStorage.setItem("kvg-recent-stops", JSON.stringify(newRecent));
   };
@@ -184,7 +183,7 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
               {(showSuggestions ? suggestionsToDisplay : filteredStops).map(
                 (stop, idx) => (
                   <li
-                    key={stop.id}
+                    key={stop.number}
                     className="hover:bg-surface-hover flex items-center px-2 transition-colors"
                   >
                     <button
@@ -211,7 +210,7 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
                             e.preventDefault(); // Prevent input from losing focus
                             e.stopPropagation();
                           }}
-                          onClick={(e) => handleRemoveRecent(e, stop.id)}
+                          onClick={(e) => handleRemoveRecent(e, stop.number)}
                           className="hover:bg-border text-muted mr-2 rounded-full p-2 transition-colors hover:text-red-400"
                           title="Aus Verlauf löschen"
                         >

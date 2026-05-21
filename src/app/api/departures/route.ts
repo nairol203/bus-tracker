@@ -4,15 +4,15 @@ import { DeparturesResponseSchema } from "@/lib/schemas";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const stopId = searchParams.get("stopId");
+  const stopNumber = searchParams.get("stopNumber");
 
-  if (!stopId) {
-    return NextResponse.json({ error: "stopId is required" }, { status: 400 });
+  if (!stopNumber) {
+    return NextResponse.json({ error: "stopNumber is required" }, { status: 400 });
   }
 
   try {
     const res = await fetch(
-      `https://kvg-internetservice-proxy.p.networkteam.com/internetservice/services/passageInfo/stopPassages/stop?stop=${stopId}&mode=departure`,
+      `https://kvg-internetservice-proxy.p.networkteam.com/internetservice/services/passageInfo/stopPassages/stop?stop=${stopNumber}&mode=departure`,
     );
 
     if (!res.ok) {

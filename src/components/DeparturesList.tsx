@@ -20,14 +20,14 @@ interface Departure {
 }
 
 interface DeparturesListProps {
-  stopId: string;
+  stopNumber: string;
   stopName: string;
   onSelectTrip: (tripId: string, line: string, destination: string) => void;
   isOffline?: boolean;
 }
 
 export default function DeparturesList({
-  stopId,
+  stopNumber,
   stopName,
   onSelectTrip,
   isOffline = false,
@@ -46,7 +46,7 @@ export default function DeparturesList({
   );
 
   const { data, error, isLoading } = useSWR(
-    `/api/departures?stopId=${stopId}`,
+    `/api/departures?stopNumber=${stopNumber}`,
     fetcher,
     {
       refreshInterval: 15000, // Poll every 15 seconds

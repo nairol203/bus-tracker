@@ -20,7 +20,7 @@ export async function getAllStops(): Promise<Stop[]> {
 
   // Deduplicate by number
   const uniqueStops = Array.from(
-    new Map(allStops.map((stop) => [stop.number || stop.id, stop])).values(),
+    new Map(allStops.map((stop) => [stop.number, stop])).values(),
   );
 
   return uniqueStops as Stop[];

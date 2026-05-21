@@ -2,9 +2,8 @@ import { z } from "zod";
 
 // 1. Stops
 export const StopSchema = z.object({
-  id: z.string(),
   name: z.string(),
-  number: z.string().optional(),
+  number: z.string(),
 });
 
 export const StopsResponseSchema = z.object({
