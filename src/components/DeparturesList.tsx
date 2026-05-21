@@ -37,7 +37,7 @@ export default function DeparturesList({
 
   const linesParam = searchParams.get("lines");
   const dirsParam = searchParams.get("dirs");
-  
+
   const selectedLines = linesParam ? linesParam.split(",") : [];
   const selectedDirections = dirsParam ? dirsParam.split(",") : [];
 

@@ -7,7 +7,10 @@ export async function GET(request: Request) {
   const stopNumber = searchParams.get("stopNumber");
 
   if (!stopNumber) {
-    return NextResponse.json({ error: "stopNumber is required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "stopNumber is required" },
+      { status: 400 },
+    );
   }
 
   try {
