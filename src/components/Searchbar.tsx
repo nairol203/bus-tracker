@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Fuse from "fuse.js";
 import { Clock, Loader2, Search, Star, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { usePlausible } from "next-plausible";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -23,6 +24,7 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
   const [recentStops, setRecentStops] = useState<Stop[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isMac, setIsMac] = useState(false);
+  const plausible = usePlausible();
 
   // Kiel recommended stops
   const recommendedStops: Stop[] = [
@@ -62,7 +64,11 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const handleSelect = (stop: Stop) => {
+  const handleSelect = (
+    stop: Stop,
+    source: "search" | "recommendedStop" | "lastSearch",
+  ) => {
+    plausible(source, { props: { stop: stop.name, number: stop.number } });
     onSelectStop(stop);
     setQuery("");
     setIsFocused(false);
@@ -139,9 +145,11 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
             } else if (e.key === "Enter") {
               e.preventDefault();
               if (query.trim() === "" && suggestionsToDisplay.length > 0) {
-                handleSelect(suggestionsToDisplay[0]);
+                const source =
+                  recentStops.length > 0 ? "lastSearch" : "recommendedStop";
+                handleSelect(suggestionsToDisplay[0], source);
               } else if (filteredStops.length > 0) {
-                handleSelect(filteredStops[0]);
+                handleSelect(filteredStops[0], "search");
               }
             }
           }}
@@ -187,7 +195,19 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
                     className="hover:bg-surface-hover flex items-center px-2 transition-colors"
                   >
                     <button
-                      onClick={() => handleSelect(stop)}
+                      onClick={() => {
+                        let source:
+                          | "search"
+                          | "recommendedStop"
+                          | "lastSearch" = "search";
+                        if (showSuggestions) {
+                          source =
+                            recentStops.length > 0
+                              ? "lastSearch"
+                              : "recommendedStop";
+                        }
+                        handleSelect(stop, source);
+                      }}
                       className="flex flex-1 items-center justify-between px-2 py-3 text-left"
                     >
                       <span className="text-foreground font-medium">
