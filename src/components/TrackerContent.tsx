@@ -17,8 +17,6 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function TrackerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [selectedStop, setSelectedStop] = useState<Stop | null>(null);
-
   const isOffline = !useSyncExternalStore(
     (callback) => {
       if (typeof window === "undefined") return () => {};
@@ -38,38 +36,29 @@ export default function TrackerContent() {
     revalidateIfStale: false,
   });
 
-  useEffect(() => {
-    const stops = stopsData || [];
-    const stopIdOrNumber = searchParams.get("stop");
+  const stopIdOrNumber = searchParams.get("stop");
+  const stops = stopsData || [];
 
-    if (stopIdOrNumber) {
-      // First try to find it in the downloaded stops array
-      if (stops.length > 0) {
-        const found = stops.find(
+  let selectedStop: Stop | null = null;
+  if (stopIdOrNumber) {
+    if (stops.length > 0) {
+      selectedStop =
+        stops.find(
           (s) => s.number === stopIdOrNumber || s.id === stopIdOrNumber,
-        );
-        if (found) {
-          // eslint-disable-next-line react-hooks/set-state-in-effect
-          setSelectedStop(found);
-          return;
-        }
-      }
+        ) || null;
+    }
 
-      // If we don't know the name yet, show a placeholder until stops loads
+    if (!selectedStop) {
       const isNumber = stopIdOrNumber.length < 10;
-      setSelectedStop({
+      selectedStop = {
         id: isNumber ? "" : stopIdOrNumber,
         name: "Lade Haltestelle...",
         number: isNumber ? stopIdOrNumber : undefined,
-      });
-    } else {
-      setSelectedStop(null);
+      };
     }
-  }, [searchParams, stopsData]);
+  }
 
   const handleSelectStop = (stop: Stop) => {
-    setSelectedStop(stop);
-
     // Update URL to make it shareable, pushing state to history
     // We intentionally wipe out lines/dirs filters when selecting a NEW stop
     const params = new URLSearchParams();
@@ -169,6 +158,7 @@ export default function TrackerContent() {
 
         {selectedStop ? (
           <DeparturesList
+            key={selectedStop.number || selectedStop.id}
             stopId={selectedStop.number || selectedStop.id}
             stopName={selectedStop.name}
             onSelectTrip={handleSelectTrip}

@@ -35,14 +35,14 @@ export default function DeparturesList({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [selectedLines, setSelectedLines] = useState<string[]>(
-    searchParams.get("lines") ? searchParams.get("lines")!.split(",") : [],
-  );
-  const [selectedDirections, setSelectedDirections] = useState<string[]>(
-    searchParams.get("dirs") ? searchParams.get("dirs")!.split(",") : [],
-  );
+  const linesParam = searchParams.get("lines");
+  const dirsParam = searchParams.get("dirs");
+  
+  const selectedLines = linesParam ? linesParam.split(",") : [];
+  const selectedDirections = dirsParam ? dirsParam.split(",") : [];
+
   const [isFiltersOpen, setIsFiltersOpen] = useState(
-    searchParams.has("lines") || searchParams.has("dirs"),
+    !!linesParam || !!dirsParam,
   );
 
   const { data, error, isLoading } = useSWR(
@@ -108,7 +108,6 @@ export default function DeparturesList({
     const newLines = selectedLines.includes(line)
       ? selectedLines.filter((l) => l !== line)
       : [...selectedLines, line];
-    setSelectedLines(newLines);
     updateParams(newLines, selectedDirections);
   };
 
@@ -116,13 +115,10 @@ export default function DeparturesList({
     const newDirs = selectedDirections.includes(dir)
       ? selectedDirections.filter((d) => d !== dir)
       : [...selectedDirections, dir];
-    setSelectedDirections(newDirs);
     updateParams(selectedLines, newDirs);
   };
 
   const resetFilters = () => {
-    setSelectedLines([]);
-    setSelectedDirections([]);
     updateParams([], []);
   };
 
