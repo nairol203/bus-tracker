@@ -1,10 +1,34 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { SWRConfig } from "swr";
 
 import { getAllStops } from "@/lib/kvg";
 import TrackerContent from "@/components/TrackerContent";
 
 export const dynamic = "force-dynamic";
+
+type Props = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata({
+  searchParams,
+}: Props): Promise<Metadata> {
+  const params = await searchParams;
+  const stopNumber = params.stop;
+
+  if (typeof stopNumber === "string") {
+    const stops = await getAllStops();
+    const stop = stops.find((s) => s.number === stopNumber);
+    if (stop) {
+      return {
+        title: `${stop.name} | KVG Bus Tracker`,
+      };
+    }
+  }
+
+  return {};
+}
 
 export default async function Home() {
   const stopsPromise = getAllStops();
