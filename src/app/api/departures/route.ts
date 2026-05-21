@@ -25,12 +25,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const text = await res.text();
-    if (!text) {
-      return NextResponse.json({ actual: [], old: [] });
-    }
-
-    const rawData = JSON.parse(text);
+    const rawData = await res.json();
     const parsed = DeparturesResponseSchema.parse(rawData);
     return NextResponse.json(parsed);
   } catch (error) {
