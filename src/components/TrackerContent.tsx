@@ -7,11 +7,11 @@ import { Bus, BusFront } from "lucide-react";
 import { motion } from "motion/react";
 import useSWR from "swr";
 
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import DeparturesList from "@/components/DeparturesList";
 import Searchbar, { Stop } from "@/components/Searchbar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import TripDetails from "@/components/TripDetails";
-import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 

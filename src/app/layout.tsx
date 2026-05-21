@@ -16,8 +16,54 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "KVG Bus Tracker",
-  description: "KVG Bus Tracker - Echtzeit Abfahrten und Routen für Kiel.",
+  metadataBase: new URL("https://bus.nairol.de"),
+  title: {
+    default: "KVG Bus Tracker | Echtzeit Abfahrten für Kiel",
+    template: "%s | KVG Bus Tracker",
+  },
+  description:
+    "Aktuelle Abfahrtszeiten aller Buslinien der KVG Kiel. Echtzeit-Infos, alle Buslinien und Verspätungen auf einen Blick.",
+  keywords: [
+    "KVG",
+    "Kiel",
+    "Bus",
+    "Tracker",
+    "Fahrplan",
+    "Abfahrtszeiten",
+    "Live",
+    "Verspätung",
+    "ÖPNV",
+  ],
+  authors: [
+    {
+      name: "nairol203",
+      url: "https://nairol.de",
+    },
+  ],
+  openGraph: {
+    title: "KVG Bus Tracker",
+    description:
+      "Aktuelle Abfahrtszeiten aller Buslinien der KVG Kiel. Echtzeit-Infos, alle Buslinien und Verspätungen auf einen Blick.",
+    url: "/",
+    siteName: "KVG Bus Tracker",
+    locale: "de_DE",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  twitter: {
+    title: "KVG Bus Tracker Kiel",
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({

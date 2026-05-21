@@ -7,7 +7,6 @@ import TrackerContent from "@/components/TrackerContent";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  // Initiate data fetching on the server side
   const stopsPromise = getAllStops();
 
   return (
@@ -22,7 +21,6 @@ export default async function Home() {
         <SWRConfig
           value={{
             fallback: {
-              // Pass the promise to client components.
               "/api/stops": stopsPromise,
             },
           }}
