@@ -88,25 +88,23 @@ export default function RootLayout({
             {children}
             <footer className="border-border bg-surface mt-auto w-full border-t py-6">
               <div className="text-muted mx-auto flex max-w-3xl flex-col items-center justify-between gap-4 px-4 text-sm sm:flex-row">
-                <p suppressHydrationWarning>
+                <a
+                  href="https://nairol.de"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-brand transition-colors"
+                  suppressHydrationWarning
+                >
                   © {new Date().getFullYear()} nairol203
-                </p>
+                </a>
                 <div className="flex items-center gap-6">
-                  <a
-                    href="https://nairol.de"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-brand transition-colors"
-                  >
-                    nairol.de
-                  </a>
                   <a
                     href="https://github.com/nairol203/bus-tracker"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-brand transition-colors"
                   >
-                    GitHub
+                    Source Code
                   </a>
                 </div>
               </div>
