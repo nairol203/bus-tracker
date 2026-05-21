@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Bus, BusFront } from "lucide-react";
@@ -17,6 +18,23 @@ export default function TrackerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedStop, setSelectedStop] = useState<Stop | null>(null);
+  const [isOffline, setIsOffline] = useState(false);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+
+    if (typeof window !== "undefined") {
+      setIsOffline(!navigator.onLine);
+      window.addEventListener("online", handleOnline);
+      window.addEventListener("offline", handleOffline);
+    }
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   const { data: stopsData } = useSWR<Stop[]>("/api/stops", fetcher, {
     revalidateOnFocus: false,
@@ -82,39 +100,67 @@ export default function TrackerContent() {
 
   return (
     <>
-      <header className="relative z-10 px-4 pt-16 pb-8 text-center">
-        <div className="absolute top-4 right-4">
-          <ThemeToggle />
-        </div>
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-surface border-border mb-6 inline-flex items-center justify-center rounded-2xl border p-3 shadow-xl"
-        >
-          <BusFront className="text-brand h-8 w-8" />
-        </motion.div>
-        <motion.h1
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="text-foreground mb-4 text-4xl font-extrabold tracking-tight md:text-5xl"
-        >
-          KVG Bus{" "}
-          <span className="from-brand-light to-brand bg-gradient-to-r bg-clip-text text-transparent">
-            Tracker
-          </span>
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="text-muted mx-auto max-w-xl text-lg"
-        >
-          Echtzeit Abfahrten und Routen für Kiel.
-        </motion.p>
-      </header>
+      {selectedStop ? (
+        <header className="border-border bg-background/80 sticky top-0 z-50 w-full border-b px-4 py-3 backdrop-blur-md">
+          <div className="mx-auto flex max-w-3xl items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Link
+                href="/"
+                className="bg-surface border-border hover:border-brand/30 hover:bg-brand/10 block rounded-xl border p-2 shadow-sm transition-all active:scale-95"
+              >
+                <BusFront className="text-brand h-6 w-6" />
+              </Link>
+            </div>
+            <Link
+              href="/"
+              className="text-foreground hover:text-brand text-lg font-bold tracking-tight transition-colors active:scale-95"
+            >
+              KVG Bus Tracker
+            </Link>
+            <div>
+              <ThemeToggle />
+            </div>
+          </div>
+        </header>
+      ) : (
+        <header className="relative z-10 px-4 pt-16 pb-8 text-center">
+          <div className="absolute top-4 right-4">
+            <ThemeToggle />
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-surface border-border mb-6 inline-flex items-center justify-center rounded-2xl border p-3 shadow-xl"
+          >
+            <BusFront className="text-brand h-8 w-8" />
+          </motion.div>
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            className="text-foreground mb-4 text-4xl font-extrabold tracking-tight md:text-5xl"
+          >
+            KVG Bus{" "}
+            <span className="from-brand-light to-brand bg-gradient-to-r bg-clip-text text-transparent">
+              Tracker
+            </span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted mx-auto max-w-xl text-lg"
+          >
+            Echtzeit Abfahrten und Routen für Kiel.
+          </motion.p>
+        </header>
+      )}
 
-      <main className="z-10 mx-auto mb-16 flex w-full max-w-3xl flex-1 flex-col px-4">
+      <main
+        className={`z-10 mx-auto mb-16 flex w-full max-w-3xl flex-1 flex-col px-4 ${
+          selectedStop ? "pt-6" : ""
+        }`}
+      >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -129,6 +175,7 @@ export default function TrackerContent() {
             stopId={selectedStop.number || selectedStop.id}
             stopName={selectedStop.name}
             onSelectTrip={handleSelectTrip}
+            isOffline={isOffline}
           />
         ) : (
           <motion.div

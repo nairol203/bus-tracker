@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getDelayMinutes } from "@/utils/time";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertCircle, Clock, Filter, Navigation } from "lucide-react";
+import { AlertCircle, Clock, Filter, Navigation, WifiOff } from "lucide-react";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -23,12 +23,14 @@ interface DeparturesListProps {
   stopId: string;
   stopName: string;
   onSelectTrip: (tripId: string, line: string, destination: string) => void;
+  isOffline?: boolean;
 }
 
 export default function DeparturesList({
   stopId,
   stopName,
   onSelectTrip,
+  isOffline = false,
 }: DeparturesListProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -143,13 +145,20 @@ export default function DeparturesList({
         <h2 className="text-foreground text-xl font-bold">
           Abfahrten von {stopName}
         </h2>
-        <div className="text-brand flex items-center text-xs">
-          <span className="relative mr-2 flex h-3 w-3">
-            <span className="bg-brand absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"></span>
-            <span className="bg-brand relative inline-flex h-3 w-3 rounded-full"></span>
-          </span>
-          Live Updates
-        </div>
+        {isOffline ? (
+          <div className="flex items-center text-xs font-semibold text-red-500">
+            <WifiOff className="mr-1.5 h-3.5 w-3.5" />
+            Offline Modus
+          </div>
+        ) : (
+          <div className="text-brand flex items-center text-xs font-semibold">
+            <span className="relative mr-2 flex h-3 w-3">
+              <span className="bg-brand absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"></span>
+              <span className="bg-brand relative inline-flex h-3 w-3 rounded-full"></span>
+            </span>
+            Live Updates
+          </div>
+        )}
       </div>
 
       {/* Filters */}
@@ -237,8 +246,10 @@ export default function DeparturesList({
             </motion.div>
           ) : (
             filteredDepartures.map((dep, idx) => {
-              const isLeavingSoon =
-                dep.actualRelativeTime > 0 && dep.actualRelativeTime < 300; // Less than 5 mins
+              const minutesRemaining = Math.max(
+                0,
+                Math.round(dep.actualRelativeTime / 60),
+              );
 
               const delay = getDelayMinutes(dep.plannedTime, dep.actualTime);
               const isDelayed = delay > 1; // 1 minute is treated as on-time buffer
@@ -257,9 +268,7 @@ export default function DeparturesList({
                   className="hover:bg-surface-hover group flex cursor-pointer items-center justify-between px-6 py-4 transition-colors"
                 >
                   <div className="flex min-w-0 flex-1 items-center space-x-4">
-                    <div
-                      className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl text-lg font-bold ${isLeavingSoon ? "bg-brand text-white shadow-[0_0_15px_rgba(59,130,246,0.5)]" : "bg-background text-foreground"}`}
-                    >
+                    <div className="bg-brand flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white shadow-md">
                       {dep.patternText}
                     </div>
                     <div className="min-w-0 flex-1 pr-2">
@@ -288,7 +297,7 @@ export default function DeparturesList({
                           </div>
                         ) : (
                           <span className="text-muted flex-shrink-0">
-                            {dep.actualTime}
+                            {dep.actualTime || dep.plannedTime}
                           </span>
                         )}
                       </div>
@@ -296,16 +305,12 @@ export default function DeparturesList({
                   </div>
 
                   <div className="ml-2 flex-shrink-0 text-right">
-                    {dep.actualRelativeTime <= 0 ? (
-                      <span className="text-brand animate-pulse font-bold">
-                        Jetzt
-                      </span>
+                    {minutesRemaining <= 0 ? (
+                      <span className="text-brand font-bold">Jetzt</span>
                     ) : (
                       <div className="flex flex-col items-end">
-                        <span
-                          className={`text-xl font-bold ${isLeavingSoon ? "text-brand" : "text-foreground"}`}
-                        >
-                          {Math.floor(dep.actualRelativeTime / 60)}
+                        <span className="text-foreground text-xl font-bold">
+                          {minutesRemaining}
                         </span>
                         <span className="text-muted text-xs tracking-wider uppercase">
                           Min

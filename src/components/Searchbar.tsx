@@ -182,18 +182,26 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
             )}
             <ul className="max-h-64 overflow-y-auto py-2">
               {(showSuggestions ? suggestionsToDisplay : filteredStops).map(
-                (stop) => (
+                (stop, idx) => (
                   <li
                     key={stop.id}
                     className="hover:bg-surface-hover flex items-center px-2 transition-colors"
                   >
                     <button
                       onClick={() => handleSelect(stop)}
-                      className="flex-1 px-2 py-3 text-left"
+                      className="flex flex-1 items-center justify-between px-2 py-3 text-left"
                     >
                       <span className="text-foreground font-medium">
                         {stop.name}
                       </span>
+                      {idx === 0 && (
+                        <span className="text-muted flex items-center gap-1 text-xs opacity-50">
+                          <kbd className="bg-background border-border rounded border px-1.5 py-0.5">
+                            ↵
+                          </kbd>
+                          <span className="hidden sm:inline">Enter</span>
+                        </span>
+                      )}
                     </button>
 
                     {showSuggestions &&
