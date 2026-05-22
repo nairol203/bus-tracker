@@ -23,6 +23,7 @@ export async function generateMetadata({
     if (stop) {
       return {
         title: `${stop.name} | KVG Bus Tracker`,
+        description: `Aktuelle Abfahrtszeiten für die Haltestelle ${stop.name}. Echtzeit-Infos der KVG Kiel, alle Buslinien und Verspätungen auf einen Blick.`,
       };
     }
   }
