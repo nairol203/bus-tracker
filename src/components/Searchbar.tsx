@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Fuse from "fuse.js";
-import { Loader2, Search } from "lucide-react";
+import { History, Loader2, Search } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { usePlausible } from "next-plausible";
 import useSWR from "swr";
@@ -18,12 +18,16 @@ export interface Stop {
 
 interface SearchbarProps {
   onSelectStop: (stop: Stop) => void;
+  showRecentSuggestions?: boolean;
 }
 
-export default function Searchbar({ onSelectStop }: SearchbarProps) {
+export default function Searchbar({
+  onSelectStop,
+  showRecentSuggestions = false,
+}: SearchbarProps) {
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const { addRecentStop } = useRecentStops();
+  const { recentStops, addRecentStop } = useRecentStops();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isMac, setIsMac] = useState(false);
   const plausible = usePlausible();
@@ -82,13 +86,19 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
     [stops],
   );
 
-  const filteredStops =
-    query.trim() === ""
-      ? []
-      : fuse
-          .search(query)
-          .map((result) => result.item)
-          .slice(0, 8);
+  const isQueryEmpty = query.trim() === "";
+
+  const filteredStops = isQueryEmpty
+    ? []
+    : fuse
+        .search(query)
+        .map((result) => result.item)
+        .slice(0, 8);
+
+  const displayedStops =
+    isQueryEmpty && showRecentSuggestions
+      ? recentStops.slice(0, 5)
+      : filteredStops;
 
   return (
     <div
@@ -108,7 +118,7 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
           ref={inputRef}
           type="text"
           role="combobox"
-          aria-expanded={isFocused && filteredStops.length > 0}
+          aria-expanded={isFocused && displayedStops.length > 0}
           aria-controls="search-suggestions"
           aria-autocomplete="list"
           className="text-foreground placeholder:text-muted w-full border-none bg-transparent pr-12 outline-none"
@@ -122,8 +132,11 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
               inputRef.current?.blur();
             } else if (e.key === "Enter") {
               e.preventDefault();
-              if (filteredStops.length > 0) {
-                handleSelect(filteredStops[0], "search");
+              if (displayedStops.length > 0) {
+                handleSelect(
+                  displayedStops[0],
+                  isQueryEmpty ? "lastSearch" : "search",
+                );
               }
             }
           }}
@@ -144,7 +157,7 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
       </div>
 
       <AnimatePresence>
-        {isFocused && filteredStops.length > 0 ? (
+        {isFocused && displayedStops.length > 0 ? (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -156,7 +169,7 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
               role="listbox"
               className="max-h-64 overflow-y-auto py-2"
             >
-              {filteredStops.map((stop, idx) => (
+              {displayedStops.map((stop, idx) => (
                 <li
                   key={stop.number}
                   role="presentation"
@@ -165,12 +178,19 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
                   <button
                     role="option"
                     aria-selected={false}
-                    onClick={() => handleSelect(stop, "search")}
+                    onClick={() =>
+                      handleSelect(stop, isQueryEmpty ? "lastSearch" : "search")
+                    }
                     className="focus-visible:ring-brand flex flex-1 items-center justify-between rounded-md px-2 py-3 text-left focus-visible:ring-2 focus-visible:outline-none"
                   >
-                    <span className="text-foreground font-medium">
-                      {stop.name}
-                    </span>
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      {isQueryEmpty && (
+                        <History className="text-muted-foreground h-4 w-4 shrink-0 opacity-60" />
+                      )}
+                      <span className="text-foreground truncate font-medium">
+                        {stop.name}
+                      </span>
+                    </div>
                     {idx === 0 && (
                       <span className="text-muted flex items-center gap-1 text-xs opacity-50">
                         <kbd className="bg-background border-border rounded border px-1.5 py-0.5">

@@ -171,7 +171,10 @@ export default function TrackerContent() {
           transition={{ delay: 0.3 }}
           className="w-full"
         >
-          <Searchbar onSelectStop={handleSelectStop} />
+          <Searchbar
+            onSelectStop={handleSelectStop}
+            showRecentSuggestions={!!selectedStop}
+          />
         </motion.div>
 
         {selectedStop ? (
