@@ -122,7 +122,7 @@ export default function Searchbar({
           aria-controls="search-suggestions"
           aria-autocomplete="list"
           className="text-foreground placeholder:text-muted w-full border-none bg-transparent pr-12 outline-none"
-          placeholder="Nach Haltestelle suchen..."
+          placeholder="Suchen"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
