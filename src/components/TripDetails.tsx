@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { getDelayMinutes } from "@/utils/time";
 import { Bus, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -39,9 +39,18 @@ export default function TripDetails({
 
   const allPassages = data ? [...(data.old || []), ...(data.actual || [])] : [];
   const nextStopIdx = data?.old ? data.old.length : 0;
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocusedElement = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (tripId) {
+      previouslyFocusedElement.current = document.activeElement as HTMLElement;
+
+      // Delay focus slightly to allow animation to start
+      setTimeout(() => {
+        closeButtonRef.current?.focus();
+      }, 10);
+
       const scrollbarWidth =
         window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = "hidden";
@@ -53,8 +62,32 @@ export default function TripDetails({
     return () => {
       document.body.style.overflow = "";
       document.body.style.paddingRight = "";
+      // Restore focus when closing
+      previouslyFocusedElement.current?.focus();
     };
   }, [tripId]);
+
+  // Handle Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && tripId) {
+        onClose();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [tripId, onClose]);
+
+  // Handle Focus Trapping
+  const handleTabKey = (e: React.KeyboardEvent) => {
+    if (e.key !== "Tab") return;
+
+    // As this modal is simple and mostly informational,
+    // we only have the close button as an interactive element.
+    // If we had more, we'd query all focusable elements.
+    e.preventDefault();
+    closeButtonRef.current?.focus();
+  };
 
   return (
     <AnimatePresence>
@@ -72,6 +105,10 @@ export default function TripDetails({
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="trip-details-title"
+            onKeyDown={handleTabKey}
             className="bg-surface border-border fixed top-0 right-0 z-50 flex h-full w-full max-w-md flex-col border-l shadow-2xl"
           >
             <div className="border-border bg-surface flex items-start justify-between border-b p-6">
@@ -80,7 +117,10 @@ export default function TripDetails({
                   <div className="bg-brand rounded-lg px-3 py-1 font-bold text-white">
                     {line}
                   </div>
-                  <h2 className="text-foreground text-xl font-bold">
+                  <h2
+                    id="trip-details-title"
+                    className="text-foreground text-xl font-bold"
+                  >
                     {destination}
                   </h2>
                 </div>
@@ -99,8 +139,10 @@ export default function TripDetails({
                 </p>
               </div>
               <button
+                ref={closeButtonRef}
                 onClick={onClose}
-                className="bg-background hover:bg-surface-hover text-muted hover:text-foreground rounded-full p-2 transition-colors"
+                aria-label="Schließen"
+                className="bg-background hover:bg-surface-hover text-muted hover:text-foreground focus-visible:ring-brand rounded-full p-2 transition-colors focus-visible:ring-2 focus-visible:outline-none"
               >
                 <X className="h-5 w-5" />
               </button>

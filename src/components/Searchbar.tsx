@@ -139,6 +139,12 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
         <input
           ref={inputRef}
           type="text"
+          role="combobox"
+          aria-expanded={
+            isFocused && (filteredStops.length > 0 || showSuggestions)
+          }
+          aria-controls="search-suggestions"
+          aria-autocomplete="list"
           className="text-foreground placeholder:text-muted w-full border-none bg-transparent pr-12 outline-none"
           placeholder="Haltestelle suchen..."
           value={query}
@@ -193,14 +199,21 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
                 {suggestionLabel}
               </div>
             )}
-            <ul className="max-h-64 overflow-y-auto py-2">
+            <ul
+              id="search-suggestions"
+              role="listbox"
+              className="max-h-64 overflow-y-auto py-2"
+            >
               {(showSuggestions ? suggestionsToDisplay : filteredStops).map(
                 (stop, idx) => (
                   <li
                     key={stop.number}
+                    role="presentation"
                     className="hover:bg-surface-hover flex items-center px-2 transition-colors"
                   >
                     <button
+                      role="option"
+                      aria-selected={false}
                       onClick={() => {
                         let source:
                           | "search"
@@ -214,7 +227,7 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
                         }
                         handleSelect(stop, source);
                       }}
-                      className="flex flex-1 items-center justify-between px-2 py-3 text-left"
+                      className="focus-visible:ring-brand flex flex-1 items-center justify-between rounded-md px-2 py-3 text-left focus-visible:ring-2 focus-visible:outline-none"
                     >
                       <span className="text-foreground font-medium">
                         {stop.name}
@@ -237,8 +250,9 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
                             e.stopPropagation();
                           }}
                           onClick={(e) => handleRemoveRecent(e, stop.number)}
-                          className="hover:bg-border text-muted mr-2 rounded-full p-2 transition-colors hover:text-red-400"
+                          className="hover:bg-border text-muted focus-visible:ring-brand mr-2 rounded-full p-2 transition-colors hover:text-red-400 focus-visible:ring-2 focus-visible:outline-none"
                           title="Aus Verlauf löschen"
+                          aria-label="Aus Verlauf löschen"
                         >
                           <X className="h-4 w-4" />
                         </button>

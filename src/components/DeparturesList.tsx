@@ -163,7 +163,8 @@ export default function DeparturesList({
           <div className="flex items-center justify-between py-3">
             <button
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-              className="text-muted hover:text-foreground flex items-center py-2 text-sm font-semibold transition-colors"
+              className="text-muted hover:text-foreground focus-visible:ring-brand -ml-2 flex items-center rounded-md px-2 py-2 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:outline-none"
+              aria-expanded={isFiltersOpen}
             >
               <Filter className="mr-2 h-4 w-4" />
               {isFiltersOpen ? "Filter ausblenden" : "Filter anzeigen"}
@@ -176,7 +177,7 @@ export default function DeparturesList({
             {(selectedLines.length > 0 || selectedDirections.length > 0) && (
               <button
                 onClick={resetFilters}
-                className="text-brand py-2 text-sm font-medium hover:underline"
+                className="text-brand focus-visible:ring-brand rounded-md px-2 py-2 text-sm font-medium hover:underline focus-visible:ring-2 focus-visible:outline-none"
               >
                 Zurücksetzen
               </button>
@@ -199,7 +200,7 @@ export default function DeparturesList({
                           <button
                             key={line}
                             onClick={() => toggleLine(line)}
-                            className={`min-h-[40px] rounded-full border px-4 py-2 text-sm font-bold transition-colors ${selectedLines.includes(line) ? "bg-brand border-brand text-white shadow-md" : "bg-background text-muted border-border hover:border-brand/50 hover:text-foreground"}`}
+                            className={`focus-visible:ring-brand min-h-[40px] rounded-full border px-4 py-2 text-sm font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none ${selectedLines.includes(line) ? "bg-brand border-brand text-white shadow-md" : "bg-background text-muted border-border hover:border-brand/50 hover:text-foreground"}`}
                           >
                             {line}
                           </button>
@@ -214,7 +215,7 @@ export default function DeparturesList({
                           <button
                             key={dir}
                             onClick={() => toggleDirection(dir)}
-                            className={`min-h-[40px] rounded-full border px-4 py-2 text-sm font-medium transition-colors ${selectedDirections.includes(dir) ? "bg-brand border-brand text-white shadow-md" : "bg-background text-muted border-border hover:border-brand/50 hover:text-foreground"}`}
+                            className={`focus-visible:ring-brand min-h-[40px] rounded-full border px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none ${selectedDirections.includes(dir) ? "bg-brand border-brand text-white shadow-md" : "bg-background text-muted border-border hover:border-brand/50 hover:text-foreground"}`}
                           >
                             {dir}
                           </button>
@@ -229,7 +230,7 @@ export default function DeparturesList({
         </div>
       )}
 
-      <div className="divide-border divide-y">
+      <div className="divide-border divide-y" aria-live="polite">
         <AnimatePresence>
           {filteredDepartures.length === 0 ? (
             <motion.div
@@ -261,7 +262,15 @@ export default function DeparturesList({
                   onClick={() =>
                     onSelectTrip(dep.tripId, dep.patternText, dep.direction)
                   }
-                  className="hover:bg-surface-hover group flex cursor-pointer items-center justify-between px-6 py-4 transition-colors"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onSelectTrip(dep.tripId, dep.patternText, dep.direction);
+                    }
+                  }}
+                  className="hover:bg-surface-hover group focus-visible:ring-brand flex cursor-pointer items-center justify-between px-6 py-4 transition-colors focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
                 >
                   <div className="flex min-w-0 flex-1 items-center space-x-4">
                     <div className="bg-brand flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white shadow-md">
