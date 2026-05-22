@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronRight, History, Loader2, MapPin } from "lucide-react";
+import { ChevronRight, History, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 
 import { useRecentStops } from "@/hooks/useRecentStops";
@@ -21,14 +20,7 @@ export const recommendedStops: Stop[] = [
 export default function QuickAccessGrid({
   onSelectStop,
 }: QuickAccessGridProps) {
-  const { addRecentStop } = useRecentStops();
-  const [pendingId, setPendingId] = useState<string | null>(null);
-
-  const handleSelect = (stop: Stop, source: "recent" | "recommended") => {
-    setPendingId(`${source}-${stop.number}`);
-    if (source === "recent") {
-      addRecentStop(stop);
-    }
+  const handleSelect = (stop: Stop) => {
     onSelectStop(stop);
   };
 
@@ -49,7 +41,7 @@ export default function QuickAccessGrid({
             {recentStops.slice(0, 4).map((stop, i) => (
               <button
                 key={stop.number}
-                onClick={() => handleSelect(stop, "recent")}
+                onClick={() => handleSelect(stop)}
                 className={`group hover:bg-surface-hover focus-visible:bg-surface-hover active:bg-surface-hover focus-visible:ring-brand flex w-full items-center justify-between p-3.5 text-left transition-colors first:rounded-t-2xl last:rounded-b-2xl focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset ${
                   i !== Math.min(recentStops.length, 4) - 1
                     ? "border-border/40 border-b"
@@ -62,11 +54,7 @@ export default function QuickAccessGrid({
                     {stop.name}
                   </span>
                 </div>
-                {pendingId === `recent-${stop.number}` ? (
-                  <Loader2 className="text-brand h-5 w-5 shrink-0 animate-spin" />
-                ) : (
-                  <ChevronRight className="text-muted group-hover:text-brand h-4 w-4 shrink-0 opacity-30 transition-all group-hover:translate-x-0.5 group-hover:opacity-100" />
-                )}
+                <ChevronRight className="text-muted group-hover:text-brand h-4 w-4 shrink-0 opacity-30 transition-all group-hover:translate-x-0.5 group-hover:opacity-100" />
               </button>
             ))}
           </div>
@@ -85,7 +73,7 @@ export default function QuickAccessGrid({
           {recommendedStops.map((stop, i) => (
             <button
               key={stop.number}
-              onClick={() => handleSelect(stop, "recommended")}
+              onClick={() => handleSelect(stop)}
               className={`group hover:bg-surface-hover focus-visible:bg-surface-hover active:bg-surface-hover focus-visible:ring-brand flex w-full items-center justify-between p-3.5 text-left transition-colors first:rounded-t-2xl last:rounded-b-2xl focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset ${
                 i !== recommendedStops.length - 1
                   ? "border-border/40 border-b"
@@ -98,11 +86,7 @@ export default function QuickAccessGrid({
                   {stop.name}
                 </span>
               </div>
-              {pendingId === `recommended-${stop.number}` ? (
-                <Loader2 className="text-brand h-5 w-5 shrink-0 animate-spin" />
-              ) : (
-                <ChevronRight className="text-muted group-hover:text-brand h-4 w-4 shrink-0 opacity-30 transition-all group-hover:translate-x-0.5 group-hover:opacity-100" />
-              )}
+              <ChevronRight className="text-muted group-hover:text-brand h-4 w-4 shrink-0 opacity-30 transition-all group-hover:translate-x-0.5 group-hover:opacity-100" />
             </button>
           ))}
         </div>

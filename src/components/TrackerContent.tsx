@@ -27,24 +27,33 @@ export default function TrackerContent() {
     revalidateIfStale: false,
   });
 
-  const stopNumber = searchParams.get("stop");
+  const [optimisticStop, setOptimisticStop] = useState<string | null>(null);
+  const stopNumberParam = searchParams.get("stop");
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOptimisticStop(null);
+  }, [stopNumberParam]);
+
+  const displayStopNumber = optimisticStop || stopNumberParam;
   const stops = stopsData || [];
 
   let selectedStop: Stop | null = null;
-  if (stopNumber) {
+  if (displayStopNumber) {
     if (stops.length > 0) {
-      selectedStop = stops.find((s) => s.number === stopNumber) || null;
+      selectedStop = stops.find((s) => s.number === displayStopNumber) || null;
     }
 
     if (!selectedStop) {
       selectedStop = {
         name: "Lade Haltestelle...",
-        number: stopNumber,
+        number: displayStopNumber,
       };
     }
   }
 
   const handleSelectStop = (stop: Stop) => {
+    setOptimisticStop(stop.number);
     // Update URL to make it shareable, pushing state to history
     // We intentionally wipe out lines/dirs filters when selecting a NEW stop
     const params = new URLSearchParams();
