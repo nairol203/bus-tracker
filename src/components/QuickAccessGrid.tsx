@@ -38,7 +38,7 @@ export default function QuickAccessGrid({
             Zuletzt gesucht
           </h2>
           <div className="bg-surface/40 border-border/60 overflow-hidden rounded-2xl border shadow-sm backdrop-blur-md">
-            {recentStops.slice(0, 4).map((stop, i) => (
+            {recentStops.slice(0, 3).map((stop, i) => (
               <button
                 key={stop.number}
                 onClick={() => handleSelect(stop)}
