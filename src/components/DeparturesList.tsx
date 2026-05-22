@@ -55,9 +55,54 @@ export default function DeparturesList({
 
   if (isLoading) {
     return (
-      <div className="bg-surface/50 border-border mt-8 flex flex-col items-center justify-center rounded-2xl border p-12">
-        <Clock className="text-brand mb-4 h-8 w-8 animate-spin" />
-        <p className="text-muted">Lade Live-Abfahrten...</p>
+      <div className="bg-surface/80 border-border mt-8 overflow-hidden rounded-2xl border shadow-xl backdrop-blur-md">
+        <div className="bg-brand/10 border-border flex items-center justify-between border-b px-6 py-4">
+          <h2 className="text-foreground text-xl font-bold">
+            Abfahrten von {stopName}
+          </h2>
+          {isOffline ? (
+            <div className="flex items-center text-xs font-semibold text-red-500">
+              <WifiOff className="mr-1.5 h-3.5 w-3.5" />
+              Offline Modus
+            </div>
+          ) : (
+            <div className="text-brand flex items-center text-xs font-semibold">
+              <span className="relative mr-2 flex h-3 w-3">
+                <span className="bg-brand absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"></span>
+                <span className="bg-brand relative inline-flex h-3 w-3 rounded-full"></span>
+              </span>
+              Live Updates
+            </div>
+          )}
+        </div>
+
+        {/* Filter Skeleton */}
+        <div className="border-border bg-surface-hover/30 border-b px-6">
+          <div className="flex items-center py-3">
+            <div className="bg-surface-hover/80 h-8 w-32 animate-pulse rounded-md" />
+          </div>
+        </div>
+
+        <div className="divide-border divide-y">
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between px-6 py-4"
+            >
+              <div className="flex min-w-0 flex-1 items-center space-x-4">
+                <div className="bg-surface-hover/80 h-12 w-12 flex-shrink-0 animate-pulse rounded-xl" />
+                <div className="min-w-0 flex-1 space-y-2.5 pr-2">
+                  <div className="bg-surface-hover/80 h-5 w-32 animate-pulse rounded-md" />
+                  <div className="bg-surface-hover/80 h-3 w-20 animate-pulse rounded-md" />
+                </div>
+              </div>
+              <div className="ml-2 flex flex-col items-end space-y-2.5">
+                <div className="bg-surface-hover/80 h-6 w-10 animate-pulse rounded-md" />
+                <div className="bg-surface-hover/80 h-3 w-8 animate-pulse rounded-md" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

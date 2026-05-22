@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { SWRConfig } from "swr";
 
 import { getAllStops } from "@/lib/kvg";
+import { PageSkeleton } from "@/components/PageSkeleton";
 import TrackerContent from "@/components/TrackerContent";
 
 export const dynamic = "force-dynamic";
@@ -31,18 +32,14 @@ export async function generateMetadata({
   return {};
 }
 
-export default async function Home() {
+export default async function Home({ searchParams }: Props) {
+  const params = await searchParams;
+  const stopNumber = typeof params.stop === "string" ? params.stop : null;
   const stopsPromise = getAllStops();
 
   return (
     <div className="bg-background relative flex min-h-screen flex-col">
-      <Suspense
-        fallback={
-          <div className="relative z-10 flex min-h-screen flex-1 items-center justify-center">
-            <div className="border-brand h-12 w-12 animate-spin rounded-full border-t-2 border-b-2"></div>
-          </div>
-        }
-      >
+      <Suspense fallback={<PageSkeleton stopNumber={stopNumber} />}>
         <SWRConfig
           value={{
             fallback: {

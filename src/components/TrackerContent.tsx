@@ -166,10 +166,10 @@ export default function TrackerContent() {
         }`}
       >
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={selectedStop ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="w-full"
+          transition={{ delay: selectedStop ? 0 : 0.3 }}
+          className="relative z-50 w-full"
         >
           <Searchbar
             onSelectStop={handleSelectStop}

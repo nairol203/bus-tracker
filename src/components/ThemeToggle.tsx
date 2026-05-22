@@ -24,7 +24,16 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <div className="h-10 w-10" />;
+    return (
+      <div className="relative">
+        <button
+          disabled
+          className="bg-surface border-border text-muted flex h-10 w-10 items-center justify-center rounded-full border shadow-sm"
+        >
+          <div className="bg-surface-hover h-5 w-5 animate-pulse rounded-full" />
+        </button>
+      </div>
+    );
   }
 
   return (

@@ -150,16 +150,43 @@ export default function TripDetails({
 
             <div className="flex-1 overflow-y-auto p-6">
               {isLoading ? (
-                <div className="space-y-6">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div
-                      key={i}
-                      className="flex animate-pulse items-center space-x-4"
-                    >
-                      <div className="bg-border h-4 w-4 rounded-full" />
-                      <div className="bg-border h-4 w-3/4 rounded" />
-                    </div>
-                  ))}
+                <div className="relative">
+                  <div className="bg-border absolute top-2 bottom-2 left-[7px] z-0 w-0.5" />
+                  <div className="relative z-10 space-y-6">
+                    {[...Array(6)].map((_, idx) => {
+                      const isPast = idx < 2;
+                      const isNextStop = idx === 2;
+
+                      return (
+                        <div
+                          key={idx}
+                          className={`flex items-start space-x-6 ${isPast ? "opacity-40" : ""}`}
+                        >
+                          <div className="relative mt-1">
+                            <div
+                              className={`h-4 w-4 flex-shrink-0 rounded-full border-2 ${isNextStop ? "border-brand bg-brand animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]" : isPast ? "border-border bg-surface" : "border-brand bg-surface"}`}
+                            />
+                            {isNextStop && (
+                              <span className="bg-brand absolute top-0 left-0 h-4 w-4 animate-ping rounded-full opacity-75"></span>
+                            )}
+                          </div>
+                          <div className="flex flex-1 items-start justify-between">
+                            <div className="w-2/3">
+                              <div
+                                className={`bg-surface-hover/80 h-5 animate-pulse rounded-md ${idx % 2 === 0 ? "w-3/4" : "w-1/2"}`}
+                              />
+                              {isNextStop && (
+                                <div className="bg-surface-hover/80 mt-2 h-3 w-1/3 animate-pulse rounded-md" />
+                              )}
+                            </div>
+                            <div className="flex flex-col items-end">
+                              <div className="bg-surface-hover/80 h-6 w-12 animate-pulse rounded-md" />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               ) : (
                 <div className="relative">
