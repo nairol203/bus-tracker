@@ -155,7 +155,7 @@ export default function TrackerContent() {
             transition={{ delay: 0.2 }}
             className="text-muted mx-auto max-w-xl text-lg"
           >
-            Echtzeit Abfahrten und Routen für Kiel.
+            Echtzeit Abfahrten für Kiel.
           </motion.p>
         </header>
       )}
