@@ -3,6 +3,7 @@
 import { getDelayMinutes } from "@/utils/time";
 import { Bus, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { useEffect } from "react";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -38,6 +39,21 @@ export default function TripDetails({
 
   const allPassages = data ? [...(data.old || []), ...(data.actual || [])] : [];
   const nextStopIdx = data?.old ? data.old.length : 0;
+
+  useEffect(() => {
+    if (tripId) {
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    };
+  }, [tripId]);
 
   return (
     <AnimatePresence>
