@@ -87,10 +87,10 @@ export default function DeparturesList({
   }
 
   const uniqueLines = Array.from(
-    new Set(departures.map((d) => d.patternText)),
+    new Set([...departures.map((d) => d.patternText), ...selectedLines]),
   ).sort();
   const uniqueDirections = Array.from(
-    new Set(departures.map((d) => d.direction)),
+    new Set([...departures.map((d) => d.direction), ...selectedDirections]),
   ).sort();
 
   const updateParams = (lines: string[], dirs: string[]) => {
