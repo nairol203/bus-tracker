@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Bus, BusFront } from "lucide-react";
@@ -55,6 +55,20 @@ export default function TrackerContent() {
   const [selectedTripLine, setSelectedTripLine] = useState<string>("");
   const [selectedTripDest, setSelectedTripDest] = useState<string>("");
 
+  useEffect(() => {
+    const handlePopState = () => {
+      // Close the modal if the pushed state is popped via back button/gesture
+      if (!window.history.state?.tripModalOpen) {
+        setSelectedTripId(null);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
   const handleSelectTrip = (
     tripId: string,
     line: string,
@@ -63,10 +77,19 @@ export default function TrackerContent() {
     setSelectedTripId(tripId);
     setSelectedTripLine(line);
     setSelectedTripDest(destination);
+
+    // Push state to browser history to allow closing via back button/gesture
+    const currentState = window.history.state || {};
+    window.history.pushState({ ...currentState, tripModalOpen: true }, "");
   };
 
   const handleCloseTrip = () => {
     setSelectedTripId(null);
+
+    // If the modal was closed via the UI button, pop the history state manually
+    if (window.history.state?.tripModalOpen) {
+      window.history.back();
+    }
   };
 
   return (
