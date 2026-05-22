@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Bus, BusFront } from "lucide-react";
+import { BusFront } from "lucide-react";
 import { motion } from "motion/react";
 import useSWR from "swr";
 
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import DeparturesList from "@/components/DeparturesList";
+import QuickAccessGrid from "@/components/QuickAccessGrid";
 import Searchbar, { Stop } from "@/components/Searchbar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import TripDetails from "@/components/TripDetails";
@@ -173,18 +174,7 @@ export default function TrackerContent() {
             isOffline={isOffline}
           />
         ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mt-16 flex flex-col items-center justify-center opacity-50"
-          >
-            <Bus className="text-muted mb-4 h-16 w-16" />
-            <p className="text-muted max-w-sm text-center">
-              Suchen und wählen Sie oben eine Haltestelle, um Live-Abfahrten zu
-              sehen.
-            </p>
-          </motion.div>
+          <QuickAccessGrid onSelectStop={handleSelectStop} />
         )}
       </main>
 

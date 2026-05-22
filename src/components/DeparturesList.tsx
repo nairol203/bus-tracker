@@ -270,7 +270,7 @@ export default function DeparturesList({
                       onSelectTrip(dep.tripId, dep.patternText, dep.direction);
                     }
                   }}
-                  className="hover:bg-surface-hover group focus-visible:ring-brand flex cursor-pointer items-center justify-between px-6 py-4 transition-colors focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
+                  className="hover:bg-surface-hover group focus-visible:ring-brand flex cursor-pointer items-center justify-between px-6 py-4 transition-colors last:rounded-b-2xl focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
                 >
                   <div className="flex min-w-0 flex-1 items-center space-x-4">
                     <div className="bg-brand flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white shadow-md">

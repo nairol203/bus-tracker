@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Fuse from "fuse.js";
-import { Clock, Loader2, Search, Star, X } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { usePlausible } from "next-plausible";
 import useSWR from "swr";
+
+import { useRecentStops } from "@/hooks/useRecentStops";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -21,30 +23,14 @@ interface SearchbarProps {
 export default function Searchbar({ onSelectStop }: SearchbarProps) {
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const [recentStops, setRecentStops] = useState<Stop[]>([]);
+  const { addRecentStop } = useRecentStops();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isMac, setIsMac] = useState(false);
   const plausible = usePlausible();
 
-  // Kiel recommended stops
-  const recommendedStops: Stop[] = [
-    { name: "Hauptbahnhof", number: "2387" },
-    { name: "Uni-Westring", number: "1491" },
-    { name: "Reventloubrücke", number: "1237" },
-  ];
-
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMac(/Mac/i.test(navigator.userAgent));
-
-    const saved = localStorage.getItem("kvg-recent-stops");
-    if (saved) {
-      try {
-        setRecentStops(JSON.parse(saved));
-      } catch (err) {
-        console.error("Failed to parse recent stops", err);
-      }
-    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.key === "k" && (e.metaKey || e.ctrlKey)) || e.key === "/") {
@@ -75,19 +61,7 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
     inputRef.current?.blur();
 
     // Update recent stops
-    const newRecent = [
-      stop,
-      ...recentStops.filter((s) => s.number !== stop.number),
-    ].slice(0, 5);
-    setRecentStops(newRecent);
-    localStorage.setItem("kvg-recent-stops", JSON.stringify(newRecent));
-  };
-
-  const handleRemoveRecent = (e: React.MouseEvent, stopNumber: string) => {
-    e.stopPropagation();
-    const newRecent = recentStops.filter((s) => s.number !== stopNumber);
-    setRecentStops(newRecent);
-    localStorage.setItem("kvg-recent-stops", JSON.stringify(newRecent));
+    addRecentStop(stop);
   };
 
   const { data: stops = [], isLoading } = useSWR<Stop[]>(
@@ -116,12 +90,6 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
           .map((result) => result.item)
           .slice(0, 8);
 
-  const showSuggestions = isFocused && query.trim() === "";
-  const suggestionsToDisplay =
-    recentStops.length > 0 ? recentStops : recommendedStops;
-  const suggestionLabel =
-    recentStops.length > 0 ? "Zuletzt gesucht" : "Empfohlen";
-
   return (
     <div
       className="relative z-50 mx-auto w-full max-w-2xl"
@@ -140,13 +108,11 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
           ref={inputRef}
           type="text"
           role="combobox"
-          aria-expanded={
-            isFocused && (filteredStops.length > 0 || showSuggestions)
-          }
+          aria-expanded={isFocused && filteredStops.length > 0}
           aria-controls="search-suggestions"
           aria-autocomplete="list"
           className="text-foreground placeholder:text-muted w-full border-none bg-transparent pr-12 outline-none"
-          placeholder="Haltestelle suchen..."
+          placeholder="Nach Haltestelle suchen..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
@@ -156,11 +122,7 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
               inputRef.current?.blur();
             } else if (e.key === "Enter") {
               e.preventDefault();
-              if (query.trim() === "" && suggestionsToDisplay.length > 0) {
-                const source =
-                  recentStops.length > 0 ? "lastSearch" : "recommendedStop";
-                handleSelect(suggestionsToDisplay[0], source);
-              } else if (filteredStops.length > 0) {
+              if (filteredStops.length > 0) {
                 handleSelect(filteredStops[0], "search");
               }
             }
@@ -182,84 +144,44 @@ export default function Searchbar({ onSelectStop }: SearchbarProps) {
       </div>
 
       <AnimatePresence>
-        {(isFocused && filteredStops.length > 0) || showSuggestions ? (
+        {isFocused && filteredStops.length > 0 ? (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="bg-surface border-border absolute top-full right-0 left-0 mt-2 overflow-hidden rounded-xl border shadow-2xl"
           >
-            {showSuggestions && (
-              <div className="bg-surface-hover/50 text-muted flex items-center px-4 py-2 text-xs font-semibold tracking-wider uppercase">
-                {recentStops.length > 0 ? (
-                  <Clock className="mr-2 h-3 w-3" />
-                ) : (
-                  <Star className="mr-2 h-3 w-3" />
-                )}
-                {suggestionLabel}
-              </div>
-            )}
             <ul
               id="search-suggestions"
               role="listbox"
               className="max-h-64 overflow-y-auto py-2"
             >
-              {(showSuggestions ? suggestionsToDisplay : filteredStops).map(
-                (stop, idx) => (
-                  <li
-                    key={stop.number}
-                    role="presentation"
-                    className="hover:bg-surface-hover flex items-center px-2 transition-colors"
+              {filteredStops.map((stop, idx) => (
+                <li
+                  key={stop.number}
+                  role="presentation"
+                  className="hover:bg-surface-hover flex items-center px-2 transition-colors"
+                >
+                  <button
+                    role="option"
+                    aria-selected={false}
+                    onClick={() => handleSelect(stop, "search")}
+                    className="focus-visible:ring-brand flex flex-1 items-center justify-between rounded-md px-2 py-3 text-left focus-visible:ring-2 focus-visible:outline-none"
                   >
-                    <button
-                      role="option"
-                      aria-selected={false}
-                      onClick={() => {
-                        let source:
-                          | "search"
-                          | "recommendedStop"
-                          | "lastSearch" = "search";
-                        if (showSuggestions) {
-                          source =
-                            recentStops.length > 0
-                              ? "lastSearch"
-                              : "recommendedStop";
-                        }
-                        handleSelect(stop, source);
-                      }}
-                      className="focus-visible:ring-brand flex flex-1 items-center justify-between rounded-md px-2 py-3 text-left focus-visible:ring-2 focus-visible:outline-none"
-                    >
-                      <span className="text-foreground font-medium">
-                        {stop.name}
+                    <span className="text-foreground font-medium">
+                      {stop.name}
+                    </span>
+                    {idx === 0 && (
+                      <span className="text-muted flex items-center gap-1 text-xs opacity-50">
+                        <kbd className="bg-background border-border rounded border px-1.5 py-0.5">
+                          ↵
+                        </kbd>
+                        <span className="hidden sm:inline">Enter</span>
                       </span>
-                      {idx === 0 && (
-                        <span className="text-muted flex items-center gap-1 text-xs opacity-50">
-                          <kbd className="bg-background border-border rounded border px-1.5 py-0.5">
-                            ↵
-                          </kbd>
-                          <span className="hidden sm:inline">Enter</span>
-                        </span>
-                      )}
-                    </button>
-
-                    {showSuggestions &&
-                      suggestionsToDisplay === recentStops && (
-                        <button
-                          onMouseDown={(e) => {
-                            e.preventDefault(); // Prevent input from losing focus
-                            e.stopPropagation();
-                          }}
-                          onClick={(e) => handleRemoveRecent(e, stop.number)}
-                          className="hover:bg-border text-muted focus-visible:ring-brand mr-2 rounded-full p-2 transition-colors hover:text-red-400 focus-visible:ring-2 focus-visible:outline-none"
-                          title="Aus Verlauf löschen"
-                          aria-label="Aus Verlauf löschen"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      )}
-                  </li>
-                ),
-              )}
+                    )}
+                  </button>
+                </li>
+              ))}
             </ul>
           </motion.div>
         ) : null}
