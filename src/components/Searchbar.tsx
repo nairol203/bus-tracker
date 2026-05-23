@@ -54,10 +54,7 @@ export default function Searchbar({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const handleSelect = (
-    stop: Stop,
-    source: "search" | "recommendedStop" | "lastSearch",
-  ) => {
+  const handleSelect = (stop: Stop, source: "search" | "lastSearch") => {
     plausible(source, { props: { stop: stop.name, number: stop.number } });
     onSelectStop(stop);
     setQuery("");

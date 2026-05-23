@@ -2,6 +2,7 @@
 
 import { ChevronRight, History, MapPin } from "lucide-react";
 import { motion } from "motion/react";
+import { usePlausible } from "next-plausible";
 
 import { useRecentStops } from "@/hooks/useRecentStops";
 import { Stop } from "@/components/Searchbar";
@@ -20,11 +21,16 @@ export const recommendedStops: Stop[] = [
 export default function QuickAccessGrid({
   onSelectStop,
 }: QuickAccessGridProps) {
-  const handleSelect = (stop: Stop) => {
+  const plausible = usePlausible();
+  const { recentStops } = useRecentStops();
+
+  const handleSelect = (
+    stop: Stop,
+    source: "recommendedStop" | "lastSearch",
+  ) => {
+    plausible(source, { props: { stop: stop.name, number: stop.number } });
     onSelectStop(stop);
   };
-
-  const { recentStops } = useRecentStops();
 
   return (
     <div className="mt-8 flex w-full flex-col gap-6">
@@ -41,7 +47,7 @@ export default function QuickAccessGrid({
             {recentStops.slice(0, 3).map((stop, i) => (
               <button
                 key={stop.number}
-                onClick={() => handleSelect(stop)}
+                onClick={() => handleSelect(stop, "lastSearch")}
                 className={`group hover:bg-surface-hover focus-visible:bg-surface-hover active:bg-surface-hover focus-visible:ring-brand flex w-full items-center justify-between p-3.5 text-left transition-colors first:rounded-t-2xl last:rounded-b-2xl focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset ${
                   i !== Math.min(recentStops.length, 4) - 1
                     ? "border-border/40 border-b"
@@ -73,7 +79,7 @@ export default function QuickAccessGrid({
           {recommendedStops.map((stop, i) => (
             <button
               key={stop.number}
-              onClick={() => handleSelect(stop)}
+              onClick={() => handleSelect(stop, "recommendedStop")}
               className={`group hover:bg-surface-hover focus-visible:bg-surface-hover active:bg-surface-hover focus-visible:ring-brand flex w-full items-center justify-between p-3.5 text-left transition-colors first:rounded-t-2xl last:rounded-b-2xl focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset ${
                 i !== recommendedStops.length - 1
                   ? "border-border/40 border-b"
