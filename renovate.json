@@ -1,10 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>nairol203/renovate-config",
-    ":pinAllExceptPeerDependencies"
-  ],
+  "extends": ["local>nairol203/renovate-config"],
   "packageRules": [
+    {
+      "matchDatasources": ["npm"],
+      "rangeStrategy": "pin"
+    },
     {
       "matchUpdateTypes": ["minor", "patch", "digest", "lockFileMaintenance"],
       "automerge": true
