@@ -7,7 +7,7 @@
       "rangeStrategy": "pin"
     },
     {
-      "matchUpdateTypes": ["minor", "patch", "digest", "lockFileMaintenance"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
       "automerge": true
     }
   ]
