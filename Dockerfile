@@ -37,7 +37,7 @@ RUN \
   fi
 
 # Production image, copy all the files and run next
-FROM gcr.io/distroless/nodejs24-debian13:nonroot@sha256:34eb2e7dd86129508526b047950308de41663e33d059e19befb0361a12286d7c
+FROM gcr.io/distroless/nodejs24-debian13:nonroot@sha256:ed5e65a1036b505c9e5abf0d0412ce0f70be1b812630bbbbaf49ce47edc7a513
 WORKDIR /app
 
 ENV NODE_ENV=production
