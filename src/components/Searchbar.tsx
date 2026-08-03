@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Fuse from "fuse.js";
 import { History, Loader2, Search } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { usePlausible } from "next-plausible";
 import useSWR from "swr";
 
 import { useRecentStops } from "@/hooks/useRecentStops";
@@ -30,7 +29,6 @@ export default function Searchbar({
   const { recentStops, addRecentStop } = useRecentStops();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isMac, setIsMac] = useState(false);
-  const plausible = usePlausible();
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -54,8 +52,7 @@ export default function Searchbar({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const handleSelect = (stop: Stop, source: "search" | "lastSearch") => {
-    plausible(source, { props: { stop: stop.name, number: stop.number } });
+  const handleSelect = (stop: Stop) => {
     onSelectStop(stop);
     setQuery("");
     setIsFocused(false);
@@ -130,10 +127,7 @@ export default function Searchbar({
             } else if (e.key === "Enter") {
               e.preventDefault();
               if (displayedStops.length > 0) {
-                handleSelect(
-                  displayedStops[0],
-                  isQueryEmpty ? "lastSearch" : "search",
-                );
+                handleSelect(displayedStops[0]);
               }
             }
           }}
@@ -175,9 +169,7 @@ export default function Searchbar({
                   <button
                     role="option"
                     aria-selected={false}
-                    onClick={() =>
-                      handleSelect(stop, isQueryEmpty ? "lastSearch" : "search")
-                    }
+                    onClick={() => handleSelect(stop)}
                     className="focus-visible:ring-brand flex flex-1 items-center justify-between rounded-md px-2 py-3 text-left focus-visible:ring-2 focus-visible:outline-none"
                   >
                     <div className="flex items-center gap-2 overflow-hidden">
