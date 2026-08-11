@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://bus.nairol.de"),
+  metadataBase: new URL("https://bus.zao.dev"),
   title: {
     default: "KVG Bus Tracker | Echtzeit Abfahrten für Kiel",
     template: "%s | KVG Bus Tracker",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "nairol203",
-      url: "https://nairol.de",
+      url: "https://zao.dev",
     },
   ],
   openGraph: {
@@ -60,7 +60,7 @@ export default function RootLayout({
               <div className="text-muted mx-auto flex max-w-3xl flex-col items-center justify-between gap-4 px-4 text-sm md:flex-row">
                 <div className="flex flex-col items-center gap-1 md:items-start">
                   <a
-                    href="https://nairol.de"
+                    href="https://zao.dev"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-brand transition-colors"

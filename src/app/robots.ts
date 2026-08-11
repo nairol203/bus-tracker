@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://bus.nairol.de/sitemap.xml",
+    sitemap: "https://bus.zao.dev/sitemap.xml",
   };
 }

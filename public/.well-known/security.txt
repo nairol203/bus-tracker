@@ -1,4 +1,4 @@
-Contact: mailto:security@nairol.de
+Contact: mailto:security@zao.dev
 Expires: 2026-12-31T22:59:00.000Z
 Preferred-Languages: de, en
-Canonical: https://bus.nairol.de/.well-known/security.txt
+Canonical: https://bus.zao.dev/.well-known/security.txt

@@ -2,7 +2,7 @@
 
 Aktuelle Abfahrtszeiten aller Buslinien der KVG Kiel. Echtzeit-Infos, alle Buslinien und Verspätungen auf einen Blick.
 
-https://bus.nairol.de
+https://bus.zao.dev
 
 ## Self host
 
